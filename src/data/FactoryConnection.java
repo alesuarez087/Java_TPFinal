@@ -1,56 +1,62 @@
 package data;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import utils.ApplicationException;
+
+import java.sql.*;
 
 public class FactoryConnection {
-	private Connection conn;
-	private int cantConn=0;
 	
+	private String dbDriver="com.mysql.jdbc.Driver";
+	private int cantCon;
+	private Connection conexion;
+	//private static String host="127.10.76.2";
+	private String port="3306";
+	private static String user="java";
+	private static String pass="java";
+	private static String db="java_tpfinal";
+	private static FactoryConnection instancia;
 	
-	
-	private FactoryConnection() throws ApplicationException {
+	private FactoryConnection(){
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			Class.forName(dbDriver);
+			conexion=null;
+			cantCon=0;
 		} catch (ClassNotFoundException e) {
-			throw new ApplicationException("Error del Driver JDBC", e);
+			e.printStackTrace();
 		}
 	}
 	
-	
-	
-	private static FactoryConnection instancia;
-	
-	public static FactoryConnection getInstancia() throws ApplicationException {
+	public static FactoryConnection getInstancia(){
 		if (instancia==null){
 			instancia = new FactoryConnection();
 		}
 		return instancia;
 	}
 	
-	public Connection getConn() throws ApplicationException {
+	
+	
+	public Connection getConnection(){
 		try {
-			if(conn==null || conn.isClosed()) {
-				conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=tpReg_java", "java", "java");
-//						"jdbc:"+dbType+"://"+host+":"+port+";databaseName="+db, user, pass);
-				cantConn++;
+			if(conexion==null || conexion.isClosed()){
+				conexion = DriverManager.getConnection("jdbc:mysql://"+"localhost"+"/"+db, user, pass);
+				cantCon++;
 			}
 		} catch (SQLException e) {
-			throw new ApplicationException("Error al conectar a la DB", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return conn;
+		return conexion;
 	}
 	
-	public void releaseConn() throws ApplicationException {
+	
+	public void releaseConnection(){
 		try {
-			cantConn--;
-			if(cantConn==0) {
-				conn.close();
+			cantCon--;
+			if(cantCon==0){
+				conexion.close();
 			}
 		} catch (SQLException e) {
-			throw new ApplicationException("Error al cerrar conexión",e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
+}
 }
 

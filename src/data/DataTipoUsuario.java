@@ -7,16 +7,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import entidades.TipoUsuario;
+import utils.ApplicationException;
 
 public class DataTipoUsuario {
 
 	public static ArrayList<TipoUsuario> GetAll(){
 		ArrayList<TipoUsuario> retorno = new ArrayList<TipoUsuario>();
-		TipoUsuario fila = null; ResultSet rs=null ; 
-		String sql = "SELECT * FROM tipos_usuario;";
-		Connection conn = FactoryConnection.getInstancia().getConnection();
+		TipoUsuario fila = null; ResultSet rs=null ; PreparedStatement stmt = null; 
+		String sql = "{ call TiposUsuarioGetAll };";
 		try{
-			PreparedStatement stmt = conn.prepareStatement(sql);
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
 			rs = stmt.executeQuery();
 			while(rs.next() && rs != null){
 				fila = new TipoUsuario();
@@ -27,9 +28,17 @@ public class DataTipoUsuario {
 			}
 		} catch(SQLException e){
 			e.printStackTrace();
-		} finally{
-			FactoryConnection.getInstancia().releaseConnection();
-			//if(stmt != null) stmt = null;
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
 			if(rs!=null) rs = null;
 		}
 		return retorno;

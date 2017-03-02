@@ -6,7 +6,7 @@ public class Entidad {
 	
 	private int id;
 	private boolean habilitado;
-	private States saste;
+	private States state;
 	
 	public int getId() {
 		return id;
@@ -20,11 +20,11 @@ public class Entidad {
 	public void setHabilitado(boolean habilitado) {
 		this.habilitado = habilitado;
 	}
-	public States getSaste() {
-		return saste;
+	public States getState() {
+		return state;
 	}
-	public void setSaste(States saste) {
-		this.saste = saste;
+	public void setState(States state) {
+		this.state = state;
 	}
 
 }

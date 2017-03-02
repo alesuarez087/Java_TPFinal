@@ -1,13 +1,23 @@
 package entidades;
 
 public class Usuario extends Entidad {
+	
+	public static enum TiposUsuario{Administrador, Usuario, Empleado}
+	
 	private String nombreUsuario;
 	private String clave;
 	private String nombre;
 	private String apellido;
 	private String email;
-	private int idTipoUsuario;
+	private String dni;
+	private TiposUsuario TipoUsuario;
 	
+	public String getDni() {
+		return dni;
+	}
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
 	public String getNombreUsuario() {
 		return nombreUsuario;
 	}
@@ -38,10 +48,10 @@ public class Usuario extends Entidad {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getIdTipoUsuario() {
-		return idTipoUsuario;
+	public TiposUsuario getTipoUsuario() {
+		return TipoUsuario;
 	}
-	public void setIdTipoUsuario(int idTipoUsuario) {
-		this.idTipoUsuario = idTipoUsuario;
+	public void setTipoUsuario(TiposUsuario tipoUsuario) {
+		TipoUsuario = tipoUsuario;
 	}
 }

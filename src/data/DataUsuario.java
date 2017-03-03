@@ -145,7 +145,7 @@ public class DataUsuario {
 
 	private static void Insert(Usuario user){
 		ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call UsuariosUpdate(?, ?, ?, ?, ?, ?, ?, ?) };";
+		String sql="{ call UsuariosInsert(?, ?, ?, ?, ?, ?, ?, ?) };";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);

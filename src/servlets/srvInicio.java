@@ -50,6 +50,10 @@ public class srvInicio extends HttpServlet {
 				
 				// TENER EN CUENTA COMO PROSEGUIR DEPENDIENDO DE QUE TIPO DE USAURIO SEA 
 				
+				request.getRequestDispatcher("genero.jsp").forward(request, response);
+				
+				
+				
 			} else{
 				request.setAttribute("messageError", "Usuario y/o Contraseña incorrecto");
 				request.getRequestDispatcher("inicio.jsp").forward(request, response);

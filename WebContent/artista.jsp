@@ -1,18 +1,23 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="entidades.Genero" %>
+<%@ page import="entidades.Artista" %>
 <%@ page import="controlador.*" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Artistas</title>
+</head>
+<body>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Géneros</title>
 </head>
 <body>
-<% ControladorGenero ctrl = new  ControladorGenero(); %>
+<% ControladorArtista ctrl = new  ControladorArtista(); %>
 <nav class="navbar navbar-inverse navbar-fixed-top">
      <div class="container-fluid">
       <div class="navbar-header">
@@ -34,29 +39,29 @@
   <br><br><br>
   <div class="container">  
 	<div align="center">
-	  <form role="form" action="srvGenero" method="post" id="formBuscar" name="formBuscar">
+	  <form role="form" action="srvArtista" method="post" id="formBuscar" name="formBuscar">
       <div class="form-inline">
         <input type="text" class="form-control" id="descSearch" name="descSearch" placeholder="¿Qué está buscando?" size="60" maxlength="45" style="height:100">
-  		<input class="btn btn-primary" type="submit" value="Buscar" id="searchGenero" name="searchGenero"/>
+  		<input class="btn btn-primary" type="submit" value="Buscar" id="searchArtista" name="searchArtista"/>
   	  </div>
     </form>
     </div>
     <br>
     <div class="col-sm-8 col-sm-offset-2" style="background-color:#ffffff">
   	  <br>
-  	  <form role="form" action="srvGenero" method="post" id="formBuscarD" name="formBuscarD">
+  	  <form role="form" action="srvArtista" method="post" id="formBuscarD" name="formBuscarD">
   	  <table align="center" style="background-color:#ffffff" >
 		<tr>
 			<td><b>Código:</b></td>
 			<td> 
 				 <div class = "form-inline">
-					<input type="text" enabled="false" class="form-control" id="idGenero" name="idGenero" readonly value="<%if(request.getAttribute("idGenero")!=null){%><%=request.getAttribute("idGenero") %><% }%>"  size="43">
+					<input type="text" enabled="false" class="form-control" id="idArtista" name="idArtista" readonly value="<%if(request.getAttribute("idArtista")!=null){%><%=request.getAttribute("idArtista") %><% }%>"  size="43">
 				 </div>
 			</td>
 		</tr>
 		<tr>
 			<td><b>Nombre:</b></td>
-			<td><input type="text" class="form-control" id="descGenero" name="descGenero" value="<%if(request.getAttribute("descGenero")!=null){%><%=request.getAttribute("descGenero") %><% }%>"></td>
+			<td><input type="text" class="form-control" id="descArtista" name="descArtista" value="<%if(request.getAttribute("descArtista")!=null){%><%=request.getAttribute("descArtista") %><% }%>"></td>
 		</tr>
 		<tr>
 			<td colspan="2">
@@ -68,7 +73,7 @@
 	</table>
 	<br>
 	<div align="center">
-	<input class="btn btn-success" type="submit" value="Guardar" id="newGenero" name="newGenero"/>
+	<input class="btn btn-success" type="submit" value="Guardar" id="newArtista" name="newArtista"/>
     </div>
     </form>
 	<br>
@@ -78,7 +83,7 @@
 
   <div class="col-sm-11.5 col-sm-offset-0.5" style="background-color:#ccc">
  	<div class="container">
-  	<h3>Géneros</h3>
+  	<h3>Artistas</h3>
    	</div>
   </div>
   <div class="col-sm-11.5 col-sm-offset-0.5">
@@ -91,15 +96,10 @@
        </thead>
        <tbody>
        	<%
-       		ArrayList<Genero> generos = new ArrayList<Genero>();
-   	   		if(request.getAttribute("generos")==null)
-       		generos = ctrl.GetAll();
-   	   		else
-   	   		generos = (ArrayList<Genero>) request.getAttribute("generos");
-       		for(Genero genero : generos){  %>
+       		for(Artista artista : ctrl.GetAll()){  %>
          <tr>
-           <td><%=genero.getId()%></td>
-           <td><%=genero.getDescripcion()%></td>
+           <td><%=artista.getId()%></td>
+           <td><%=artista.getNombre()%></td>
          </tr>
          <%} %>
        </tbody>

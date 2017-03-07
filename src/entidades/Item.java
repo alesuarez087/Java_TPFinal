@@ -1,23 +1,31 @@
 package entidades;
 
-import java.time.*;
+import data.DataArtista;
+import data.DataGenero;
 
 public class Item extends Entidad {
-	enum TiposDisco{ CD, DVD, Vinilo, Pasta, BlueRay}
+	public static enum TiposDisco{ CD, DVD, Vinilo, Pasta, BlueRay}
 	
-	private double precioTotal;
+	private double precio;
 	private int stock;
 	private String titulo;
 	private String anioLanzamiento;
-	private LocalTime duracion;
 	private TiposDisco tipoDisco;
 	private int idArtista;
 	private int idGenero;
-	public double getPrecioTotal() {
-		return precioTotal;
+	private String urlPortada;
+	
+	public String getUrlPortada() {
+		return urlPortada;
 	}
-	public void setPrecioTotal(double precioTotal) {
-		this.precioTotal = precioTotal;
+	public void setUrlPortada(String urlPortada) {
+		this.urlPortada = urlPortada;
+	}
+	public double getPrecio() {
+		return precio;
+	}
+	public void setPrecio(double precio) {
+		this.precio = precio;
 	}
 	public int getStock() {
 		return stock;
@@ -37,12 +45,6 @@ public class Item extends Entidad {
 	public void setAnioLanzamiento(String anioLanzamiento) {
 		this.anioLanzamiento = anioLanzamiento;
 	}
-	public LocalTime getDuracion() {
-		return duracion;
-	}
-	public void setDuracion(LocalTime duracion) {
-		this.duracion = duracion;
-	}
 	public TiposDisco getTipoDisco() {
 		return tipoDisco;
 	}
@@ -60,5 +62,18 @@ public class Item extends Entidad {
 	}
 	public void setIdGenero(int idGenero) {
 		this.idGenero = idGenero;
+	}
+	
+	
+	public Artista GetArtista(){
+		return DataArtista.GetOne(idArtista);
+	}
+	
+	public Genero GetGenero(){
+		return DataGenero.GetOne(idGenero);
+	}
+	
+	public void quitoStock(int cant){
+		stock -= cant;
 	}
 }

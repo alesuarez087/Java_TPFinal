@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import controlador.ControladorArtista;
 import entidades.Artista;
+import entidades.Genero;
 import entidades.Entidad.States;
 
 /**
@@ -43,7 +44,7 @@ public class srvArtista extends HttpServlet {
 		
 		
 		if(request.getParameter("newArtista")!=null){
-			if(request.getSession().getAttribute("FormSession") == null){
+			if(request.getParameter("idArtista").equals("")){
 				if(this.validArtista(request.getParameter("descArtista"))){
 					artista.setNombre(request.getParameter("descArtista"));
 					artista.setHabilitado(true);
@@ -73,6 +74,28 @@ public class srvArtista extends HttpServlet {
 				request.getSession().setAttribute("FormSession", "Modificacion");
 				request.getRequestDispatcher("artista.jsp").forward(request, response);
 			}
+		}
+		
+		if(request.getParameter("eventUpdate")!=null){
+			artista = ctrl.GetOne(request.getParameter("nombreSelect"));
+			request.setAttribute("idArtista", artista.getId());
+			request.setAttribute("descArtista", artista.getNombre());
+			request.getSession().setAttribute("FormSession", "Modificacion");
+			request.getRequestDispatcher("artista.jsp").forward(request, response);
+		}
+		
+		if(request.getParameter("clearForm")!=null){
+			request.setAttribute("idArtista", "");
+			request.setAttribute("descArtista", "");
+			request.getSession().setAttribute("FormSession", null);
+			request.getRequestDispatcher("artista.jsp").forward(request, response);
+		}
+		
+		if(request.getParameter("eventDelete")!=null){
+			artista = ctrl.GetOne(request.getParameter("nombreSelect"));
+			artista.setState(States.Baja);
+			ctrl.Save(artista);
+			request.getRequestDispatcher("artista.jsp").forward(request, response);
 		}
 	}
 

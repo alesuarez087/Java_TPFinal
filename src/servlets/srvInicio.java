@@ -33,7 +33,10 @@ public class srvInicio extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		request.getSession().setAttribute("userSession", null);
+		request.getRequestDispatcher("inicio.jsp").forward(request, response);
 	}
 
 	/**
@@ -50,7 +53,7 @@ public class srvInicio extends HttpServlet {
 				
 				// TENER EN CUENTA COMO PROSEGUIR DEPENDIENDO DE QUE TIPO DE USAURIO SEA 
 				
-				request.getRequestDispatcher("genero.jsp").forward(request, response);
+				request.getRequestDispatcher("itemUser.jsp").forward(request, response);
 				
 				
 				
@@ -87,5 +90,8 @@ public class srvInicio extends HttpServlet {
 				request.getRequestDispatcher("inicio.jsp").forward(request, response);
 			}
 		}
+		
+		
+		
 	}
 }

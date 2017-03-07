@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controlador.ControladorGenero;
+import controlador.Controlador;
 import entidades.Entidad.States;
 import entidades.Genero;
 
@@ -18,7 +18,7 @@ import entidades.Genero;
 public class srvGenero extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	ControladorGenero ctrl = new ControladorGenero();
+	Controlador ctrl = new Controlador();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -73,6 +73,28 @@ public class srvGenero extends HttpServlet {
 				request.getSession().setAttribute("FormSession", "Modificacion");
 				request.getRequestDispatcher("genero.jsp").forward(request, response);
 			}
+		}
+		
+		if(request.getParameter("eventUpdate")!=null){
+			genero = ctrl.GetOne(request.getParameter("descSelect"));
+			request.setAttribute("idGenero", genero.getId());
+			request.setAttribute("descGenero", genero.getDescripcion());
+			request.getSession().setAttribute("FormSession", "Modificacion");
+			request.getRequestDispatcher("genero.jsp").forward(request, response);
+		}
+		
+		if(request.getParameter("clearForm")!=null){
+			request.setAttribute("idGenero", "");
+			request.setAttribute("descGenero", "");
+			request.getSession().setAttribute("FormSession", null);
+			request.getRequestDispatcher("genero.jsp").forward(request, response);
+		}
+		
+		if(request.getParameter("eventDelete")!=null){
+			Genero gen = ctrl.GetOne(request.getParameter("descSelect"));
+			gen.setState(States.Baja);
+			ctrl.Save(gen);
+			request.getRequestDispatcher("genero.jsp").forward(request, response);
 		}
 	}
 	

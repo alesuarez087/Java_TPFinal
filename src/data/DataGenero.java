@@ -44,6 +44,39 @@ public class DataGenero {
 		}
 		return list;
 	}
+
+	public static ArrayList<Genero> GetAllHabilitados(){
+		ArrayList<Genero> list = new ArrayList<Genero>();
+		Genero gen = null; ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call GenerosGetAllHabilitado };";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			while(rs.next() && rs!=null){
+				gen = new Genero();
+				gen.setId(rs.getInt("id_genero"));
+				gen.setDescripcion(rs.getString("desc_genero"));
+				gen.setHabilitado(rs.getBoolean("habilitado"));
+				
+				list.add(gen);
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+		return list;
+	}
 	
 	public static Genero GetOne(String desc){
 		Genero gen = null; ResultSet rs = null; PreparedStatement stmt = null;
@@ -76,6 +109,36 @@ public class DataGenero {
 		return gen;
 	}
 	
+	public static Genero GetOne(int id){
+		Genero gen = null; ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call GenerosGetOneForID(?) };";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
+			while(rs.next() && rs!=null){
+				gen = new Genero();
+				gen.setId(rs.getInt("id_genero"));
+				gen.setDescripcion(rs.getString("desc_genero"));
+				gen.setHabilitado(rs.getBoolean("habilitado"));
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+		return gen;
+	}
 	
 	public static void Save(Genero gen){
 		if(gen.getState()==States.Alta) Insert(gen);
@@ -139,7 +202,7 @@ public class DataGenero {
 	
 	private static void Delete(Genero gen){
 		ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call UsuariosDelete(?) };";
+		String sql="{ call GenerosDelete(?) };";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);

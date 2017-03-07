@@ -1,10 +1,14 @@
 package entidades;
 
+import java.util.Date;
+
 public class Venta extends Entidad {
 	private double montoTotal;
 	private String titularTarjeta;
-	private String nroTarjeta;
+	private int nroTarjeta;
 	private int idUsuario;
+	private Date fecha;
+	
 	public double getMontoTotal() {
 		return montoTotal;
 	}
@@ -17,10 +21,10 @@ public class Venta extends Entidad {
 	public void setTitularTarjeta(String titularTarjeta) {
 		this.titularTarjeta = titularTarjeta;
 	}
-	public String getNroTarjeta() {
+	public int getNroTarjeta() {
 		return nroTarjeta;
 	}
-	public void setNroTarjeta(String nroTarjeta) {
+	public void setNroTarjeta(int nroTarjeta) {
 		this.nroTarjeta = nroTarjeta;
 	}
 	public int getIdUsuario() {
@@ -28,5 +32,11 @@ public class Venta extends Entidad {
 	}
 	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
+	}
+	public Date getFecha() {
+		return fecha;
+	}
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 }

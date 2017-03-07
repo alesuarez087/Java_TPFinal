@@ -71,6 +71,37 @@ public class DataArtista {
 		}
 		return art;
 	}
+
+	public static Artista GetOne(int id){
+		Artista art = null; ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call ArtistasGetOneForID(?) };";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
+			while(rs.next() && rs!=null){
+				art = new Artista();
+				art.setId(rs.getInt("id_artista"));
+				art.setNombre(rs.getString("nombre_artista"));
+				art.setHabilitado(rs.getBoolean("habilitado"));
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+		return art;
+	}
 	
 	public static void Save(Artista art){
 		if(art.getState()==States.Alta) Insert(art);

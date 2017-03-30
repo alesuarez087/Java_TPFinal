@@ -6,135 +6,33 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import entidades.Venta;
+import entidades.Clasificacion;
+import entidades.Entidad.States;
 import utils.ApplicationException;
 
-public class DataVenta {
-
-	public static ArrayList<Venta> GetAll(){
-		ArrayList<Venta> list = new ArrayList<Venta>();
-		Venta venta = null; ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentasGetAll };";
-		try{
-			Connection conn = FactoryConexion.getInstancia().getConn();
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			while(rs.next() && rs!=null){
-				venta = new Venta();
-				venta.setId(rs.getInt("id_venta"));
-				venta.setHabilitado(rs.getBoolean("habilitado"));
-				venta.setIdUsuario(rs.getInt("id_usuario"));
-				venta.setMontoTotal(rs.getDouble("monto"));
-				venta.setNroTarjeta(rs.getInt("nro_tarjeta"));
-				venta.setTitularTarjeta(rs.getString("titular_tarjeta"));
-				venta.setFecha(rs.getDate("fecha"));
-				
-				list.add(venta);
-			}
-		} catch(SQLException e){
-			e.printStackTrace();
-		} catch(ApplicationException e){
-			e.printStackTrace();
-		}
-		finally{
-			try {
-				FactoryConexion.getInstancia().releaseConn();
-			} catch (ApplicationException e) {
-				e.printStackTrace();
-			}
-			if(stmt != null) stmt = null;
-			if(rs!=null) rs = null;
-		}
-		return list;
-	}
-
-	public static ArrayList<Venta> VentasGetAllForUser(int idUsuario){
-		ArrayList<Venta> list = new ArrayList<Venta>();
-		Venta venta = null; ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentasGetAllForUser(?) };";
-		try{
-			Connection conn = FactoryConexion.getInstancia().getConn();
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, idUsuario);
-			rs = stmt.executeQuery();
-			while(rs.next() && rs!=null){
-				venta = new Venta();
-				venta.setId(rs.getInt("id_venta"));
-				venta.setHabilitado(rs.getBoolean("habilitado"));
-				venta.setIdUsuario(rs.getInt("id_usuario"));
-				venta.setMontoTotal(rs.getDouble("monto"));
-				venta.setNroTarjeta(rs.getInt("nro_tarjeta"));
-				venta.setTitularTarjeta(rs.getString("titular_tarjeta"));
-				venta.setFecha(rs.getDate("fecha"));
-				
-				list.add(venta);
-			}
-		} catch(SQLException e){
-			e.printStackTrace();
-		} catch(ApplicationException e){
-			e.printStackTrace();
-		}
-		finally{
-			try {
-				FactoryConexion.getInstancia().releaseConn();
-			} catch (ApplicationException e) {
-				e.printStackTrace();
-			}
-			if(stmt != null) stmt = null;
-			if(rs!=null) rs = null;
-		}
-		return list;
-	}
+public class DataClasificacion {
 	
-	public static Venta GetOne(int idVenta){
-		Venta venta = null; ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentasGetOne(?) };";
-		try{
-			Connection conn = FactoryConexion.getInstancia().getConn();
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, idVenta);
-			rs = stmt.executeQuery();
-			while(rs.next() && rs!=null){
-				venta = new Venta();
-				venta.setId(rs.getInt("id_venta"));
-				venta.setHabilitado(rs.getBoolean("habilitado"));
-				venta.setIdUsuario(rs.getInt("id_usuario"));
-				venta.setMontoTotal(rs.getDouble("monto"));
-				venta.setNroTarjeta(rs.getInt("nro_tarjeta"));
-				venta.setTitularTarjeta(rs.getString("titular_tarjeta"));
-				venta.setFecha(rs.getDate("fecha"));
-			}
-		} catch(SQLException e){
-			e.printStackTrace();
-		} catch(ApplicationException e){
-			e.printStackTrace();
-		}
-		finally{
-			try {
-				FactoryConexion.getInstancia().releaseConn();
-			} catch (ApplicationException e) {
-				e.printStackTrace();
-			}
-			if(stmt != null) stmt = null;
-			if(rs!=null) rs = null;
-		}
-		return venta;
-	}
-	
-	public static void Insert(Venta venta){
+	public static ArrayList<Clasificacion> GetAll(int idItem){
+		ArrayList<Clasificacion> list = new ArrayList<Clasificacion>();
+		Clasificacion clas = null;
 		ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentasInsert(?, ?, ?, ?) };";
+		String sql="{ call ClasificacionesGetAll(?) }";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, venta.getIdUsuario());
-			stmt.setDouble(2, venta.getMontoTotal());
-			stmt.setInt(3, venta.getNroTarjeta());
-			stmt.setString(4, venta.getTitularTarjeta());
-			
-//			venta.setFecha(rs.getDate("fecha"));
-			
+			stmt.setInt(1, idItem);
 			rs = stmt.executeQuery();
+			while(rs.next()){
+				clas = new Clasificacion();
+				clas.setId(rs.getInt("id_clasificacion"));
+				clas.setIdItem(rs.getInt("id_item"));
+				clas.setIdUsuario(rs.getInt("id_usuario"));
+				clas.setValor(rs.getInt("puntos"));
+				clas.setDetalles(rs.getString("mensaje_adjunto"));
+				
+				list.add(clas);
+			}
+			
 		} catch(SQLException e){
 			e.printStackTrace();
 		} catch(ApplicationException e){
@@ -149,16 +47,57 @@ public class DataVenta {
 			if(stmt != null) stmt = null;
 			if(rs!=null) rs = null;
 		}
+		return list;
 	}
-	
-	public static int ultimaVenta(){
-		ResultSet rs = null; PreparedStatement stmt = null; int ret = 0;
-		String sql="SELECT MAX(id_venta) FROM ventas;";
+
+	public static Clasificacion GetOne(int idItem, int idUsuario){
+		Clasificacion clas = null;
+		ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call ClasificacionesGetOne(?, ?) }";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, idItem);
+			stmt.setInt(2, idUsuario);
 			rs = stmt.executeQuery();
-			while(rs.next() && rs!=null) ret = rs.getInt(1);
+			while(rs.next()){
+				clas = new Clasificacion();
+				clas.setId(rs.getInt("id_clasificacion"));
+				clas.setIdItem(rs.getInt("id_item"));
+				clas.setIdUsuario(rs.getInt("id_usuario"));
+				clas.setValor(rs.getInt("puntos"));
+				clas.setDetalles(rs.getString("mensaje_adjunto"));
+			}
+			
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+		return clas;
+	}
+	
+	public static int GetPromedio(int idItem){
+		int ret = 0;
+		ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call ClasificacionesPromedio(?) }";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, idItem);
+			rs = stmt.executeQuery();
+			while(rs.next()){
+				ret =rs.getInt("id_clasificacion");
+			}
 			
 		} catch(SQLException e){
 			e.printStackTrace();
@@ -176,4 +115,71 @@ public class DataVenta {
 		}
 		return ret;
 	}
+	
+	public static void Save(Clasificacion clas){
+		if(clas.getState() == States.Alta) Insert(clas);
+		else if (clas.getState() == States.Modificacion) Update(clas);
+		else clas.setState(States.Consulta);
+	}
+
+	private static void Update(Clasificacion clas){
+		ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call ClasificacionesInsert(?, ?, ?, ?, ?) }";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			
+			stmt.setInt(1, clas.getIdItem());
+			stmt.setInt(2, clas.getIdUsuario());
+			stmt.setInt(3, clas.getValor());
+			stmt.setString(4, clas.getDetalles());
+			stmt.setInt(5, clas.getId());
+			rs = stmt.executeQuery();
+			
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+	}
+	
+	private static void Insert(Clasificacion clas){
+		ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call ClasificacionesInsert(?, ?, ?, ?) }";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			
+			stmt.setInt(1, clas.getIdItem());
+			stmt.setInt(2, clas.getIdUsuario());
+			stmt.setInt(3, clas.getValor());
+			stmt.setString(4, clas.getDetalles());
+			
+			rs = stmt.executeQuery();
+			
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+	}
+
 }

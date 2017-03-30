@@ -1,10 +1,14 @@
 package entidades;
 
+import data.DataItem;
+import data.DataUsuario;
+
 public class Clasificacion extends Entidad {
 	private int valor;
 	private String detalles;
 	private int idUsuario;
-	private int idVentaItem;
+	private int idItem;
+	
 	public int getValor() {
 		return valor;
 	}
@@ -23,12 +27,18 @@ public class Clasificacion extends Entidad {
 	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
 	}
-	public int getIdVentaItem() {
-		return idVentaItem;
+	public int getIdItem() {
+		return idItem;
 	}
-	public void setIdVentaItem(int idVentaItem) {
-		this.idVentaItem = idVentaItem;
+	public void setIdItem(int idItem) {
+		this.idItem = idItem;
 	} 
 	
+	public Item GetItem(){
+		return DataItem.GetOne(idItem);
+	}
+	public Usuario GetUsuario(){
+		return DataUsuario.GetOne(idUsuario);
+	}
 	
 }

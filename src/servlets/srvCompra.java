@@ -43,7 +43,7 @@ public class srvCompra extends HttpServlet {
 
 		if(request.getParameter("eventSale")!=null){
 			if(request.getSession().getAttribute("userSession")!=null){
-				Item item = ctrl.GetOne(Integer.parseInt(request.getParameter("idSelect")));
+				Item item = ctrl.getOneItem(Integer.parseInt(request.getParameter("idSelect")));
 				request.getSession().setAttribute("item", item);
 				request.getRequestDispatcher("elegido.jsp").forward(request, response);
 			} else request.getRequestDispatcher("inicio.jsp").forward(request, response);
@@ -77,42 +77,35 @@ public class srvCompra extends HttpServlet {
 			Venta venta = new Venta(); Item item;
 			Usuario user = (Usuario)request.getSession().getAttribute("userSession");
 			ArrayList<VentaItem> ventaItem = (ArrayList<VentaItem>)request.getSession().getAttribute("carrito");
-			double monto = 0; int i=0;
+			double monto = 0;
 			
 			for(VentaItem vi : ventaItem){
-				monto = monto + vi.getCantidad()*ctrl.GetOne(vi.getIdItem()).getPrecio();
+				monto = monto + vi.getCantidad()*ctrl.getOneItem(vi.getIdItem()).getPrecio();
 			}
 			
 			venta.setIdUsuario(user.getId());
-//			venta.setIdUsuario(2);
 			venta.setMontoTotal(monto);
 			venta.setNroTarjeta(Integer.parseInt(request.getParameter("nroTarjeta")));
 			venta.setTitularTarjeta(request.getParameter("titTarjeta"));
 			
-			ctrl.Save(venta);
+			ctrl.save(venta);
+			venta.setId(ctrl.ultimaVenta());
 			
 			for(VentaItem vi : ventaItem){
-				vi.setIdVenta(ctrl.UltimaVenta());
+				vi.setIdVenta(venta.getId());
 				
-				item = ctrl.GetOne(vi.getIdItem());
+				item = ctrl.getOneItem(vi.getIdItem());
 				item.quitoStock(vi.getCantidad());
 				item.setState(States.Modificacion);
 				
-				ctrl.Save(item);
-				ctrl.Save(vi);
+				ctrl.save(item);
+				ctrl.save(vi);
 			}
 			request.getSession().setAttribute("carrito", null);
-			request.getRequestDispatcher("usuarioItem.jsp").forward(request, response);
+			request.getRequestDispatcher("itemUser.jsp").forward(request, response);
 		}
 		
-		if(request.getParameter("eventCalif")!=null){
-			VentaItem vi = ctrl.VentaItemGetOne(Integer.parseInt(request.getParameter("idSelect")));
-			Usuario user = (Usuario)request.getSession().getAttribute("userSession");
-			Clasificacion clas = new Clasificacion();
-			clas.setIdVentaItem(vi.getId());
-			clas.setId(user.getId());
-			clas.setValor(Integer.parseInt(request.getParameter("cmbCalif")));
-		}
+		
 	}
 
 }

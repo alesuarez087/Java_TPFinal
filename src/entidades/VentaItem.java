@@ -1,6 +1,7 @@
 package entidades;
 
 import data.DataItem;
+import data.DataVenta;
 
 public class VentaItem extends Entidad {
 	private int idVenta;
@@ -27,5 +28,8 @@ public class VentaItem extends Entidad {
 	
 	public Item GetItem(){
 		return DataItem.GetOne(idItem);
+	}
+	public Venta GetVenta(){
+		return DataVenta.GetOne(idVenta);
 	}
 }

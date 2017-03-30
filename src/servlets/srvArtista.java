@@ -7,9 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controlador.ControladorArtista;
+import controlador.Controlador;
 import entidades.Artista;
 import entidades.Genero;
+import utils.Validate;
 import entidades.Entidad.States;
 
 /**
@@ -19,7 +20,7 @@ import entidades.Entidad.States;
 public class srvArtista extends HttpServlet {
 	private static final long serialVersionUID = 1L;
    
-	ControladorArtista ctrl = new ControladorArtista();
+	Controlador ctrl = new Controlador();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -40,46 +41,42 @@ public class srvArtista extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Artista artista = new Artista();
+		Artista artista;
 		
 		
 		if(request.getParameter("newArtista")!=null){
 			if(request.getParameter("idArtista").equals("")){
-				if(this.validArtista(request.getParameter("descArtista"))){
-					artista.setNombre(request.getParameter("descArtista"));
-					artista.setHabilitado(true);
-					artista.setState(States.Alta);
-					ctrl.Save(artista);
+				artista = new Artista();
+				artista.setState(States.Alta);
+			} else { 
+				artista = ctrl.getOneArtista(Integer.parseInt(request.getParameter("idArtista")));
+				artista.setState(States.Modificacion); 
+				request.getSession().setAttribute("FormSession", null);
+			}
+			artista.setNombre(request.getParameter("descArtista"));
+			artista.setHabilitado(true);
+			
+			if(artista.getState()==States.Alta){
+				if(Validate.Artista(request.getParameter("descArtista"))){
+					ctrl.save(artista);
 				} else{
 					request.setAttribute("messageError", "Ya existe ese Artista");
 				}
-			} else { 
-				artista.setState(States.Modificacion); 
-				artista.setId(Integer.parseInt(request.getParameter("idArtista")));
-				artista.setNombre(request.getParameter("descArtista"));
-				artista.setHabilitado(true);
-				request.getSession().setAttribute("FormSession", null);
-				ctrl.Save(artista);
-			}
+			} else ctrl.save(artista);
+			
 			request.getRequestDispatcher("artista.jsp").forward(request, response);
 			
 				
 		}
 		
-		if(request.getParameter("searchArtista")!=null){
-			artista = ctrl.GetOne(request.getParameter("descSearch"));
-			if(artista!=null){
-				request.setAttribute("idArtista", artista.getId());
-				request.setAttribute("descArtista", artista.getNombre());
-				request.getSession().setAttribute("FormSession", "Modificacion");
-				request.getRequestDispatcher("artista.jsp").forward(request, response);
-			}
-		}
-		
 		if(request.getParameter("eventUpdate")!=null){
-			artista = ctrl.GetOne(request.getParameter("nombreSelect"));
+			artista = ctrl.getOneArtista(request.getParameter("nombreSelect"));
 			request.setAttribute("idArtista", artista.getId());
 			request.setAttribute("descArtista", artista.getNombre());
+			
+			if(artista.isHabilitado()) request.setAttribute("habilitado", true);
+			else request.setAttribute("habilitado", null);
+			
 			request.getSession().setAttribute("FormSession", "Modificacion");
 			request.getRequestDispatcher("artista.jsp").forward(request, response);
 		}
@@ -87,21 +84,16 @@ public class srvArtista extends HttpServlet {
 		if(request.getParameter("clearForm")!=null){
 			request.setAttribute("idArtista", "");
 			request.setAttribute("descArtista", "");
+			request.setAttribute("habilitado", null);
 			request.getSession().setAttribute("FormSession", null);
 			request.getRequestDispatcher("artista.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("eventDelete")!=null){
-			artista = ctrl.GetOne(request.getParameter("nombreSelect"));
+			artista = ctrl.getOneArtista(request.getParameter("nombreSelect"));
 			artista.setState(States.Baja);
-			ctrl.Save(artista);
+			ctrl.save(artista);
 			request.getRequestDispatcher("artista.jsp").forward(request, response);
 		}
-	}
-
-	private boolean validArtista(String desc){ 
-		Artista art = ctrl.GetOne(desc);
-		if(art != null) return false;
-			else return true;
 	}
 }

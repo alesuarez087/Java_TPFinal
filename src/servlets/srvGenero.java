@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import controlador.Controlador;
 import entidades.Entidad.States;
 import entidades.Genero;
+import utils.Validate;
 
 /**
  * Servlet implementation class srvGenero
@@ -44,41 +45,34 @@ public class srvGenero extends HttpServlet {
 		
 		if(request.getParameter("newGenero")!=null){
 			if(request.getSession().getAttribute("FormSession") == null){
-				if(this.validDescripcion(request.getParameter("descGenero"))){
-					genero.setDescripcion(request.getParameter("descGenero"));
-					genero.setHabilitado(true);
-					genero.setState(States.Alta);
-					ctrl.Save(genero);
+				genero.setState(States.Alta);
+			} else { 
+				genero = ctrl.getOneGenero(Integer.parseInt(request.getParameter("idGenero")));
+				genero.setState(States.Modificacion); 
+				request.getSession().setAttribute("FormSession", null);
+			}
+			genero.setDescripcion(request.getParameter("descGenero"));
+			if(request.getParameter("habilitado")==null) genero.setHabilitado(false);
+			else genero.setHabilitado(true);
+			if(genero.getState()==States.Alta){
+				if(Validate.Descripcion(request.getParameter("descGenero"))){
+					ctrl.save(genero);
 				} else{
 					request.setAttribute("messageError", "Ya existe ese Género");
 				}
-			} else { 
-				genero.setState(States.Modificacion); 
-				genero.setId(Integer.parseInt(request.getParameter("idGenero")));
-				genero.setDescripcion(request.getParameter("descGenero"));
-				genero.setHabilitado(true);
-				request.getSession().setAttribute("FormSession", null);
-				ctrl.Save(genero);
-			}
+			} else ctrl.save(genero);
+			
 			request.getRequestDispatcher("genero.jsp").forward(request, response);
 			
 				
 		}
 		
-		if(request.getParameter("searchGenero")!=null){
-			genero = ctrl.GetOne(request.getParameter("descSearch"));
-			if(genero!=null){
-				request.setAttribute("idGenero", genero.getId());
-				request.setAttribute("descGenero", genero.getDescripcion());
-				request.getSession().setAttribute("FormSession", "Modificacion");
-				request.getRequestDispatcher("genero.jsp").forward(request, response);
-			}
-		}
-		
 		if(request.getParameter("eventUpdate")!=null){
-			genero = ctrl.GetOne(request.getParameter("descSelect"));
+			genero = ctrl.getOneGenero(request.getParameter("descSelect"));
 			request.setAttribute("idGenero", genero.getId());
 			request.setAttribute("descGenero", genero.getDescripcion());
+			if(genero.isHabilitado()) request.setAttribute("habilitado", true);
+				else request.setAttribute("habilitado", null);
 			request.getSession().setAttribute("FormSession", "Modificacion");
 			request.getRequestDispatcher("genero.jsp").forward(request, response);
 		}
@@ -86,23 +80,20 @@ public class srvGenero extends HttpServlet {
 		if(request.getParameter("clearForm")!=null){
 			request.setAttribute("idGenero", "");
 			request.setAttribute("descGenero", "");
+			request.setAttribute("habilitado", null);
 			request.getSession().setAttribute("FormSession", null);
 			request.getRequestDispatcher("genero.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("eventDelete")!=null){
-			Genero gen = ctrl.GetOne(request.getParameter("descSelect"));
+			Genero gen = ctrl.getOneGenero(request.getParameter("descSelect"));
 			gen.setState(States.Baja);
-			ctrl.Save(gen);
+			ctrl.save(gen);
 			request.getRequestDispatcher("genero.jsp").forward(request, response);
 		}
 	}
 	
 	
 	
-	private boolean validDescripcion(String desc){ 
-		Genero gen = ctrl.GetOne(desc);
-		if(gen != null) return false;
-			else return true;
-	}
+	
 }

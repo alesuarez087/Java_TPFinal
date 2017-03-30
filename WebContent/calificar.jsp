@@ -9,86 +9,135 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Compras</title>
-</head>
-<body>
 
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="bootstrap/css/dashboard.css" rel="stylesheet">
+	<link href="bootstrap/css/propio.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Artistas</title>
+
 </head>
 <body>
-<% Controlador ctrl = new  Controlador(); %>
-<% Usuario user = (Usuario)request.getSession().getAttribute("userSession"); %>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-     <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand">Luzbelito</a>
-      </div>
-      <div>
-        <ul class="nav navbar-nav">
-          <li><a href="itemUser.jsp">Discos</a></li> 
-          <li class="active"><a>Editar</a></li>
-          </ul>
-        <ul class="nav navbar-nav navbar-right">
-        	<li><a href="srvInicio.jps">Cerrar Sesión</a>
-        </ul>
-      </div>
-    </div>
-</nav>
-<div class="container-fluid">
-	<h3>Compras</h3>
-      <div class="row">
-        <div class="col-sm-4 col-md-4">
-			<table class="table table-hover">
-       <thead> 
-         <tr> 
-           <th>Código de Compra</th>
-           <th>Nombre de Disco</th>
-           <th>Artista</th>
-           <th>Calificacion</th>
-           <th></th> 
-         </tr> 
-       </thead>
-       <tbody>
-       	<% for(VentaItem ventaItem : ctrl.VentaItemGetAll(user.getId())){  %>
-         <tr>
-           <td style="vertical-align:middle">
-           		<input type="hidden" name="nro" id="nro" value="<%=ventaItem.getIdVenta()%>" /><%=ventaItem.getIdVenta()%>
-           </td>
-           <td style="vertical-align:middle">
-           		<input type="hidden" name="disco" id="disco" value="<%=ventaItem.GetItem().getTitulo()%>"/><%=ventaItem.GetItem().getTitulo()%>
-           </td>
-           <td style="vertical-align:middle">
-           		<input type="hidden" name="artista" id="artista" value="<%=ventaItem.GetItem().GetArtista().getNombre()%>"/><%=ventaItem.GetItem().GetArtista().getNombre()%>
-           </td>
-           <td style="vertical-align:middle">
-           		<select class="form-control" id="cmbCalif" name="cmbCalif">
- 		   				<option>
- 		   				<%if(request.getAttribute("generoItem")!=null){%> 
- 		   				<%= request.getAttribute("generoItem") %> <%}%>
- 		   				</option>
- 				   		<option>1</option>
- 				   		<option>2</option>
- 				   		<option>3</option>
- 				   		<option>4</option>
- 				   		<option>5</option>
-				</select>
-           </td>
-           <form role="form" action="srvCompra" method="post" id="botonera" name="botonera">
-           		<td style="vertical-align:middle">
-           			<input type="hidden" name="idSelect" id="idSelect" value="<%=ventaItem.getId()%>"/>
-           			<input class="btn btn-success btn-sm" type="submit" value="Calificar" id="eventCalif" name="eventCalif" />
-           		</td>
-           </form>
-         </tr>
-         <%} %>
-       </tbody>
-     </table>
 
+	<% Controlador ctrl = new  Controlador(); 
+	   Usuario user = (Usuario)request.getSession().getAttribute("userSession"); 
+	   Clasificacion clas = (Clasificacion)request.getSession().getAttribute("clas"); 
+	%>
+	
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand">Luzbelito</a>
+		</div>
+		<div>
+        	<ul class="nav navbar-nav">
+        		<li><a href="itemUser.jsp">Discos</a></li>
+        		<li class="active"><a href="compras.jsp">Compras</a></li>
+        	</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<% 	if(user != null){ 
+					int nro=0;
+					if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
+           				nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
+           			} else nro = 0; %>
+        		<li><a>
+        			<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> <% } %> 
+				<form action="srvInicio" method="post" id="cerrar" name="cerrar">
+        			<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
+        		</form>
+        	</ul>
 		</div>
 	</div>
+</nav>
+
+<div class="container-fluid">
+      <div class="row">	
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="compras.jsp">Compras</a></li>
+            <li class="active"><a href="itemsComprados.jsp">Clasficaciones<span class="sr-only">(current)</span></a></li>
+            </ul>
+        </div>
+	</div>
+</div>
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	<h3 class="page-header">Clasificar</h3>
+	<div class="row placeholders">
+       <div class="col-xs-6 col-sm-3 placeholder"> 
+        	<form action="srvCalificar" method="post" id="califica" name="califica">
+        	<table>
+        		<tr>
+        			<td rowspan=6>
+        				<img src="<%= clas.GetItem().getUrlPortada() %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+        			</td>
+        			<td colspan=2>
+        				<h3><%=clas.GetItem().getTitulo() %></h3>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td colspan=2>
+        				<h4><%=clas.GetItem().GetArtista().getNombre() %></h4>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td colspan=2>
+        				<h4>Lanzamiento: <%=clas.GetItem().getAnioLanzamiento() %></h4>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td>
+        				<h4>Calificación </h4>
+        			</td>
+        			<td>
+        				<p class="clasificacion">
+        					<input id="radio1" name="estrellas" value="5" type="radio"><label for="radio1">&#9733;</label>
+							<input id="radio2" name="estrellas" value="4" type="radio"><label for="radio2">&#9733;</label>
+    						<input id="radio3" name="estrellas" value="3" type="radio"><label for="radio3">&#9733;</label>
+    						<input id="radio4" name="estrellas" value="2" type="radio"><label for="radio4">&#9733;</label>
+							<input id="radio5" name="estrellas" value="1" type="radio"><label for="radio5">&#9733;</label>
+  						</p>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td colspan=2>
+        				<input type="text" class="form-control" id="messageAdd" name="messageAdd" value="<%if(request.getAttribute("messageAdd")!=null){%><%=request.getAttribute("messageAdd") %><% }%>" placeholder="Comentario">
+        			</td>
+        		</tr>
+        		<tr>
+        			<td>
+        				<input class="btn btn-success" type="submit" value="Calificar" id="eventCalif" name="eventCalif"/>
+        			</td>
+        			<td>
+						<input class="btn btn-default" type="submit" value="Cancelar" id="eventCancel" name="eventCancel"/>
+					</td>
+        		</tr>
+        		<tr>
+        			<td colspan=3>
+        				<h4>Promedio: <%=ctrl.getPromedio(clas.getIdItem()) %></h4>
+        			</td>
+        		</tr>
+        	</table>
+      	  	</form>
+      	  </div>
+	</div>
+</div>
+
+
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	<h3 class="page-subheader">Comentarios</h3>
+	<%  if(ctrl.getAllClasificacion(clas.getIdItem()).size()!=0){
+		for(Clasificacion cl : ctrl.getAllClasificacion(clas.getIdItem())){ 
+  		if(cl.getDetalles() != null){ %>
+			<div class="panel panel-default">
+  				<div class="panel-heading">Usuario: <%=cl.GetUsuario().getNombreUsuario() %></div>
+  				<div class="panel-body">
+    				<%= cl.getDetalles() %>
+  				</div>
+			</div>
+	<% } } } else{ %>
+	<h4>Sin Comentarios</h4> <% } %>
 </div>
 
 </body>

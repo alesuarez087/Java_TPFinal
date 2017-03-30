@@ -1,6 +1,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="entidades.Artista" %>
 <%@ page import="controlador.*" %>
+<%@ page import="utils.*" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -16,9 +17,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Artistas</title>
+<script>
+function valida(){
+	if(formTabla.descArtista.value == ''){alert('Ingrese de Nombre de Artista'); return false;}
+	else return true
+}
+</script>
 </head>
 <body>
-<% ControladorArtista ctrl = new  ControladorArtista(); %>
+<% Controlador ctrl = new  Controlador(); %>
 <nav class="navbar navbar-inverse navbar-fixed-top">
      <div class="container-fluid">
       <div class="navbar-header">
@@ -30,7 +37,9 @@
           <li class="active"><a>Editar</a></li>
           </ul>
         <ul class="nav navbar-nav navbar-right">
-        	<li><a href="srvInicio.jps">Cerrar Sesión</a>
+        	<form action="srvInicio" method="post" id="cerrar" name="cerrar">
+        		<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
+        	</form>
         </ul>
       </div>
     </div>
@@ -52,21 +61,14 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
 <h2 class="page-header">Artistas</h2>
-<form role="form" action="srvArtista" method="post" id="formBuscar" name="formBuscar">
-      <div class="form-inline">
-        <input type="text" class="form-control" id="descSearch" name="descSearch" placeholder="¿Qué está buscando?" size="60" maxlength="45" style="height:100">
-  		<input class="btn btn-primary" type="submit" value="Buscar" id="searchArtista" name="searchArtista"/>
-  	  </div>
-    </form>
-    
-<br>
-  	  <form role="form" action="srvArtista" method="post" id="formBuscarD" name="formBuscarD">
+
+  	  <form role="form" action="srvArtista" method="post" id="formTabla" name="formTabla" onsubmit="return valida()">
   	  <table>
 		<tr>
 			<td><b>Código:</b></td>
 			<td> 
 				 <div class = "form-inline">
-					<input type="text" enabled="false" class="form-control" id="idArtista" name="idArtista" readonly value="<%if(request.getAttribute("idArtista")!=null){%><%=request.getAttribute("idArtista") %><% }%>"  size="43">
+					<input type="text" readonly class="form-control" id="idArtista" name="idArtista" readonly value="<%if(request.getAttribute("idArtista")!=null){%><%=request.getAttribute("idArtista") %><% }%>"  size="43">
 				 </div>
 			</td>
 		</tr>
@@ -74,6 +76,15 @@
 			<td><b>Nombre:</b></td>
 			<td><input type="text" class="form-control" id="descArtista" name="descArtista" value="<%if(request.getAttribute("descArtista")!=null){%><%=request.getAttribute("descArtista") %><% }%>"></td>
 		</tr>
+		<tr>
+			<td><b>Habilitado:</b></td>
+			<td> 
+				 <div class = "form-inline">
+					<input type="checkbox" class="form-control" id="habilitado" name="habilitado" <%if(request.getAttribute("habilitado")!=null){%> <%if(Boolean.parseBoolean(request.getAttribute("habilitado").toString())==true){ %>checked <% } }%>" size="55">
+				 </div>
+			</td>
+		</tr>
+		<tr>
 		<tr>
 			<td colspan="2">
 				<%if (request.getAttribute("messageError")!=null){ %> <font color="#FF0000"> <%=request.getAttribute("messageError") %></font><%} %>
@@ -99,17 +110,21 @@
          <tr> 
            <th>Código</th>
            <th>Nombre</th>
+           <th>Habilitado</th>
            <th></th> 
          </tr> 
        </thead>
        <tbody>
-       	<% for(Artista artista : ctrl.GetAll()){  %>
+       	<% for(Artista artista : ctrl.getAllArtista()){  %>
          <tr>
            <td style="vertical-align:middle">
            		<input type="hidden" name="nro" id="nro" value="<%=artista.getId()%>" /><%=artista.getId()%>
            </td>
            <td style="vertical-align:middle">
            		<input type="hidden" name="desc" id="desc" value="<%=artista.getNombre()%>"/><%=artista.getNombre()%>
+           </td>
+           <td style="vertical-olign:middle">
+           		<input type="checkbox" readonly disabled <%if(artista.isHabilitado()){ %> checked <%} %>><td>
            </td>
            <form role="form" action="srvArtista" method="post" id="botonera" name="botonera">
            		<td style="vertical-align:middle">

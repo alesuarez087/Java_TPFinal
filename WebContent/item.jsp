@@ -26,9 +26,9 @@
           <li><a href="itemUser.jsp">Discos</a></li> 
           <li class="active"><a>Editar</a></li>
           </ul>
-        <ul class="nav navbar-nav navbar-right">
-        	<li><a href="srvInicio.jps">Cerrar Sesión</a>
-        </ul>
+        <form action="srvInicio" method="post" id="cerrar" name="cerrar">
+        	<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
+        </form>
       </div>
     </div>
 </nav>
@@ -53,11 +53,11 @@
 
 <!-- Formulario buscar INICIO -->
 	
-  	<form role="form" action="srvItem" method="post" id="formBuscar" name="formBuscar">
-      <div class="form-inline">
+  	<div class="form-inline">
         <input type="text" class="form-control" id="titBuscar" name="titBuscar" placeholder="¿Qué está buscando?" size="60" maxlength="45" style="height:100">
-  		<input class="btn btn-primary" type="submit" value="Buscar" id="eventoBuscar" name="eventoBuscar"/>
-  	  </div>
+  		<input class="btn btn-primary" type="submit" value="Buscar" id="eventoBuscar" name="eventoBuscar">
+  	  </div><form role="form" action="srvItem" method="post" id="formBuscar" name="formBuscar">
+      
     </form>
     
 <!-- Formulario buscar FIN -->
@@ -86,7 +86,7 @@
  						<%if(request.getAttribute("artistaItem")!=null){%> <%= request.getAttribute("artistaItem") %> <%}%>
  					</option>
  					<%
-          		 		for(Artista artista : ctrl.ArtistaGetAll()){
+          		 		for(Artista artista : ctrl.getAllArtistaHab()){
            			%>
  		   			<option>
  		   				<%= artista.getNombre() %>
@@ -104,7 +104,7 @@
  		   			<%= request.getAttribute("generoItem") %> <%}%>
  		   		</option>
   				<%
-          	 		for(Genero genero : ctrl.GeneroGetAll()){
+          	 		for(Genero genero : ctrl.getAllGeneroHab()){
            		%>
  		   		<option>
  		   			<%=genero.getDescripcion()%>
@@ -145,6 +145,13 @@
 			<td><b>URL Portada:</b></td>
 			<td><input type="text" class="form-control" id="urlPortada" name="urlPortada" value="<%if(request.getAttribute("urlPortada")!=null){%><%=request.getAttribute("urlPortada") %><% }%>"></td>
 		</tr>
+		<tr>
+			<td colspan="2">
+				<%if (request.getAttribute("messageError")!=null){ %> <font color="#FF0000"> <%=request.getAttribute("messageError") %></font><%} %>
+      		</td>
+      		<td>
+      		</td>
+		</tr>
 	</table>
 	<br>
 	<div align="center">
@@ -170,7 +177,7 @@
        </thead>
        <tbody> 
        	<% 
-        	for(Item item : ctrl.ItemsGetAll()){  
+        	for(Item item : ctrl.getAllItem()){  
         %>
          <tr>
          	<td><%= item.getId() %></td>

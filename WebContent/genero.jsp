@@ -11,6 +11,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Géneros</title>
+
+<script type="text/javascript">
+	function validar(){
+		if(formTabla.descGenero == ""){alert('Ingrese Nombre de Genero');return false;}
+		else return true;
+	}
+</script>
+
 </head>
 <body>
 <% Controlador ctrl = new  Controlador(); %>
@@ -24,9 +32,9 @@
           <li><a href="itemUser.jsp">Discos</a></li> 
           <li class="active"><a>Editar</a></li>
           </ul>
-        <ul class="nav navbar-nav navbar-right">
-        	<li><a href="srvInicio.jps">Cerrar Sesión</a>
-        </ul>
+        <form action="srvInicio" method="post" id="cerrar" name="cerrar">
+        	<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
+        </form>
       </div>
     </div>
 </nav>
@@ -48,28 +56,27 @@
 
 <h2 class="page-header">Géneros</h2>
 
-	<form role="form" action="srvGenero" method="post" id="formBuscar" name="formBuscar">
-		<div class="form-inline">
-        	<input type="text" class="form-control" id="descSearch" name="descSearch" placeholder="¿Qué está buscando?" size="60" maxlength="45" style="height:100">
-			<input class="btn btn-primary" type="submit" value="Buscar" id="searchGenero" name="searchGenero"/>
-		</div>
-	</form>
-	
-	<br>
-	
-	<form role="form" action="srvGenero" method="post" id="formBuscarD" name="formBuscarD">
+	<form role="form" action="srvGenero" method="post" id="formTabla" name="formTabla">
 		<table>
 			<tr>
 				<td><b>Código:</b></td>
 			<td> 
 				 <div class = "form-inline">
-					<input type="text" enabled="false" class="form-control" id="idGenero" name="idGenero" readonly value="<%if(request.getAttribute("idGenero")!=null){%><%=request.getAttribute("idGenero") %><% }%>"  size="43">
+					<input type="text" class="form-control" id="idGenero" name="idGenero" readonly value="<%if(request.getAttribute("idGenero")!=null){%><%=request.getAttribute("idGenero") %><% }%>"  size="43">
 				 </div>
 			</td>
 		</tr>
 		<tr>
 			<td><b>Nombre:</b></td>
 			<td><input type="text" class="form-control" id="descGenero" name="descGenero" value="<%if(request.getAttribute("descGenero")!=null){%><%=request.getAttribute("descGenero") %><% }%>"></td>
+		</tr>
+		<tr>
+			<td><b>Habilitado:</b></td>
+			<td> 
+				 <div class = "form-inline">
+					<input type="checkbox" class="form-control" id="habilitado" name="habilitado" <%if(request.getAttribute("habilitado")!=null){%> <%if(Boolean.parseBoolean(request.getAttribute("habilitado").toString())==true){ %>checked <% } }%>" size="55">
+				 </div>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2">
@@ -93,6 +100,7 @@
 			<tr> 
            		<th>Código</th>
            		<th>Nombre</th>
+           		<th>Habilitado</th>
            		<th></th> 
          	</tr> 
        </thead>
@@ -100,7 +108,7 @@
        	<%
        		ArrayList<Genero> generos = new ArrayList<Genero>();
    	   		if(request.getAttribute("generos")==null)
-       		generos = ctrl.GetAllHabilitados();
+       		generos = ctrl.getAllGenero();
    	   		else
    	   		generos = (ArrayList<Genero>) request.getAttribute("generos"); int i = 0;
        		for(Genero genero : generos){  %>
@@ -111,6 +119,9 @@
            <td style="vertical-align:middle">
            		<input type="hidden" name="desc" id="desc" value="<%=genero.getDescripcion()%>"/><%=genero.getDescripcion()%>
            </td>
+           <td style="vertical-olign:middle">
+           		<input type="checkbox" readonly disabled <%if(genero.isHabilitado()){ %> checked <%} %>><td>
+           </td>	
            <form role="form" action="srvGenero" method="post" id="botonera" name="botonera">
            		<td style="vertical-align:middle">
            			<input type="hidden" name="descSelect" id="descSelect" value="<%=genero.getDescripcion()%>"/>

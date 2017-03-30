@@ -27,6 +27,7 @@ public class DataUsuario {
 				usuario.setEmail(rs.getString("email"));
 				usuario.setNombreUsuario(rs.getString("nombre_usuario"));
 				usuario.setHabilitado(rs.getBoolean("habilitado"));
+				usuario.setDni(rs.getString("dni"));
 				
 				switch(rs.getInt("id_tipo_usuario")){
 					case 1: usuario.setTipoUsuario(TiposUsuario.Administrador); break;
@@ -70,6 +71,49 @@ public class DataUsuario {
 				usuario.setEmail(rs.getString("email"));
 				usuario.setNombreUsuario(rs.getString("nombre_usuario"));
 				usuario.setHabilitado(rs.getBoolean("habilitado"));
+				usuario.setDni(rs.getString("dni"));
+				
+				switch(rs.getInt("id_tipo_usuario")){
+					case 1: usuario.setTipoUsuario(TiposUsuario.Administrador); break;
+					case 2: usuario.setTipoUsuario(TiposUsuario.Empleado); break;
+					case 3: usuario.setTipoUsuario(TiposUsuario.Usuario); break;
+				}
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+		return usuario;
+	}
+	
+	public static Usuario GetOne(int idUsuario){
+		Usuario usuario = null; ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call UsuariosGetOneForId(?) };";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, idUsuario);
+			rs = stmt.executeQuery();
+			while(rs.next() && rs!=null){
+				usuario = new Usuario();
+				usuario.setId(rs.getInt("id_usuario"));
+				usuario.setNombre(rs.getString("nombre"));
+				usuario.setApellido(rs.getString("apellido"));
+				usuario.setClave(rs.getString("clave"));
+				usuario.setEmail(rs.getString("email"));
+				usuario.setNombreUsuario(rs.getString("nombre_usuario"));
+				usuario.setHabilitado(rs.getBoolean("habilitado"));
+				usuario.setDni(rs.getString("dni"));
 				
 				switch(rs.getInt("id_tipo_usuario")){
 					case 1: usuario.setTipoUsuario(TiposUsuario.Administrador); break;
@@ -112,6 +156,7 @@ public class DataUsuario {
 				usuario.setEmail(rs.getString("email"));
 				usuario.setNombreUsuario(rs.getString("nombre_usuario"));
 				usuario.setHabilitado(rs.getBoolean("habilitado"));
+				usuario.setDni(rs.getString("dni"));
 				
 				switch(rs.getInt("id_tipo_usuario")){
 					case 1: usuario.setTipoUsuario(TiposUsuario.Administrador); break;

@@ -16,32 +16,38 @@
 	<%Controlador ctrl = new Controlador(); %>
 	<%Usuario user = (Usuario)request.getSession().getAttribute("userSession"); %>
 <body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand">Luzbelito</a>
-			</div>
-		<div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+     <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand">Luzbelito</a>
+      </div>
+      <div>
         <ul class="nav navbar-nav">
-        <li class="active"><a href="discos.jsp">Discos</a></li>
-		<% 	if(user != null){ int nro=0;
+          	<li class="active"><a href="itemUser.jsp">Discos</a></li>
+          	<%  if(user!=null) if(user.getTipoUsuario() == entidades.Usuario.TiposUsuario.Administrador){ %>
+          	<li><a href="item.jsp">Editar</a></li> <% } else { %>
+          	<li><a href="compras.jsp">Compras</a></li> <% } %> 
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+        	<% 	if(user != null){ int nro=0;
 			if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
            		nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
            	} else nro = 0; %>
-        <li><a href="carrito.jsp">Carrito de compras <span clase="badge">(<%=nro %>)</a></li>
-		<%  if(user.getTipoUsuario() == entidades.Usuario.TiposUsuario.Administrador){ %>
-		<li><a href="item.jsp">Editar Disco</a></li>
-		</ul>
-		</ul><%}%>
-		<ul class="nav navbar-nav navbar-right"> 
-		<li><a href="inicio.jsp">Cerrar Sesión</a></li> <%}
-        	else{%>
-        <ul class="nav navbar-nav navbar-right">
-       		<li><a href="inicio.jsp">Iniciar Sesión</a></li> 
-        </ul><%} %>
+        	<li><a href="carrito.jsp">
+        	<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> 
+
+        	<% }
+        		
+        	if(user != null){	%>        	
+        	<form action="srvInicio" method="post" id="cerrar" name="cerrar">
+        		<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
+        	</form><% } else { %>
+        	<li><a href="inicio.jsp">Iniciar Sesión</a></li> <% } %>        	
+        </ul>
       </div>
     </div>
-  </nav>
+</nav>
 
 <div class="container-fluid">
       <div class="row">
@@ -57,26 +63,28 @@
 	</div>
 </div>
 
-	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h3 class="page-header">Discos - Artistas</h3>
-				<div class="row placeholders">
-				<% 	for(Artista artista : ctrl.ArtistaGetAll()){ 
-					if(ctrl.ItemsGetAllForArtista(artista.getNombre()).size()!=0){ %>
-            		<div class="col-xs-6 col-sm-3 placeholder">
-            		<h3><%=artista.getNombre() %></h3>
-						<%for(Item item : ctrl.ItemsGetAllForArtista(artista.getNombre())){ %>
-              			<img src="<%= item.getUrlPortada() %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-              			<h4><%= item.getTitulo() %></h4>
-              			<span class="text-muted"><%= item.GetArtista().getNombre() %></span>
-              			<h4>$<%=item.getPrecio() %></h4>
-					<form action="srvCompra" method="post" id="compra" name="compra">
-              			<input type="hidden" name="idSelect" id="idSelect" value="<%=item.getId()%>"/>
-           				<input class="btn btn-success btn-sm" type="submit" value="Agregar" id="eventSale" name="eventSale" />
-           	  		</form>
-            		</div>
-            	<% } } }%>
-				</div>
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	<h2 class="page-header">Discos - Artistas</h2>
+	<% 	for(Artista artista : ctrl.getAllArtista()){ %>
+	<%if(ctrl.getAllItemForArtista(artista.getNombre()).size()!=0){ %>
+	<h3 class="sub-header"><%=artista.getNombre() %></h3>
+	<div class="row placeholders">
+					
+			<%for(Item item : ctrl.getAllItemForArtista(artista.getNombre())){ %>
+			<div class="col-xs-6 col-sm-3 placeholder">
+             	<img src="<%= item.getUrlPortada() %>" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+             	<h4><%= item.getTitulo() %></h4>
+             	<span class="text-muted"><%= item.GetArtista().getNombre() %></span>
+             	<h4>$<%=item.getPrecio() %></h4>
+				<form action="srvCompra" method="post" id="compra" name="compra">
+              		<input type="hidden" name="idSelect" id="idSelect" value="<%=item.getId()%>"/>
+           			<input class="btn btn-success btn-sm" type="submit" value="Agregar" id="eventSale" name="eventSale" />
+           	  	</form>
+			</div>
+			<% } %>
 	</div>
+	<% } }%>
+</div>
 	
 </body>
 </html>

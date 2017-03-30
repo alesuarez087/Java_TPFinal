@@ -35,8 +35,7 @@ public class srvInicio extends HttpServlet {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		
-		request.getSession().setAttribute("userSession", null);
-		request.getRequestDispatcher("inicio.jsp").forward(request, response);
+		
 	}
 
 	/**
@@ -91,7 +90,10 @@ public class srvInicio extends HttpServlet {
 			}
 		}
 		
-		
+		if(request.getParameter("logout")!=null){
+			request.getSession().setAttribute("userSession", null);
+			request.getRequestDispatcher("itemUser.jsp").forward(request, response);;
+		}
 		
 	}
 }

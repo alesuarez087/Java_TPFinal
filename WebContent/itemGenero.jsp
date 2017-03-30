@@ -13,35 +13,44 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 </head>
-	<%Controlador ctrl = new Controlador(); %>
-	<%Usuario user = (Usuario)request.getSession().getAttribute("userSession"); %>
+	<%Controlador ctrl = new Controlador(); 
+		Usuario user = null;
+		if((Usuario)request.getSession().getAttribute("userSession")!=null) 
+			user = (Usuario)request.getSession().getAttribute("userSession");
+	%>
 <body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand">Luzbelito</a>
-			</div>
-		<div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+     <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand">Luzbelito</a>
+      </div>
+      <div>
         <ul class="nav navbar-nav">
-        <li class="active"><a href="discos.jsp">Discos</a></li>
-		<% 	if(user != null){ int nro=0;
+          	<li class="active"><a href="itemUser.jsp">Discos</a></li>
+          	<%  if(user!=null) if(user.getTipoUsuario() == entidades.Usuario.TiposUsuario.Administrador){ %>
+          	<li><a href="item.jsp">Editar</a></li> <% } else { %>
+          	<li><a href="compras.jsp">Compras</a></li> <% } %> 
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+        	<% 	if(user != null){ int nro=0;
 			if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
            		nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
            	} else nro = 0; %>
-        <li><a href="carrito.jsp">Carrito de compras <span clase="badge">(<%=nro %>)</a></li>
-		<%  if(user.getTipoUsuario() == entidades.Usuario.TiposUsuario.Administrador){ %>
-		<li><a href="item.jsp">Editar Disco</a></li>
-		</ul>
-		</ul><%}%>
-		<ul class="nav navbar-nav navbar-right"> 
-		<li><a href="inicio.jsp">Cerrar Sesión</a></li> <%}
-        	else{%>
-        <ul class="nav navbar-nav navbar-right">
-       		<li><a href="inicio.jsp">Iniciar Sesión</a></li> 
-        </ul><%} %>
+        	<li><a href="carrito.jsp">
+        	<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> 
+
+        	<% }
+        		
+        	if(user != null){	%>        	
+        	<form action="srvInicio" method="post" id="cerrar" name="cerrar">
+        		<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
+        	</form><% } else { %>
+        	<li><a href="inicio.jsp">Iniciar Sesión</a></li> <% } %>        	
+        </ul>
       </div>
     </div>
-  </nav>
+</nav>
 
 <div class="container-fluid">
       <div class="row">
@@ -51,7 +60,7 @@
           	<li><a href="itemUser.jsp">Todos</a></li>
             <li><a href="itemArtista.jsp">Artistas</a></li>
             <li class="active"><a>Géneros<span class="sr-only">(current)</span></a></li>
-            <li><a href="itemUsuario.jsp">Top</a></li>
+            <li><a href="itemUsuario.jsp">Togp</a></li>
             </ul>
         </div>
 	</div>
@@ -72,7 +81,7 @@
  		   				<%= request.getAttribute("generoItem") %> <%}%>
  		   				</option>
   						<%
-          	 				for(Genero genero : ctrl.GeneroGetAll()){
+          	 				for(Genero genero : ctrl.getAllGenero()){
 		           		%>
  				   		<option>
  		   					<%=genero.getDescripcion()%>

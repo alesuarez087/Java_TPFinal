@@ -46,6 +46,41 @@ public class DataVentaItem {
 		return list;
 	}
 	
+	public static ArrayList<VentaItem> GetAllVentas(int IdVenta){
+		ArrayList<VentaItem> list = new ArrayList<VentaItem>();
+		VentaItem vi = null; ResultSet rs = null; PreparedStatement stmt = null;
+		String sql="{ call VentaItemGetAll(?) };";
+		try{
+			Connection conn = FactoryConexion.getInstancia().getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, IdVenta);
+			rs = stmt.executeQuery();
+			while(rs.next() && rs!=null){
+				vi = new VentaItem();
+				vi.setCantidad(rs.getInt("cantidad"));
+				vi.setId(rs.getInt("id_usuario"));
+				vi.setIdItem(rs.getInt("id_item"));
+				vi.setIdVenta(rs.getInt("id_venta"));
+				
+				list.add(vi);
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		} catch(ApplicationException e){
+			e.printStackTrace();
+		}
+		finally{
+			try {
+				FactoryConexion.getInstancia().releaseConn();
+			} catch (ApplicationException e) {
+				e.printStackTrace();
+			}
+			if(stmt != null) stmt = null;
+			if(rs!=null) rs = null;
+		}
+		return list;
+	}
+	
 	public static VentaItem GetOne(int idVentaItem){
 		VentaItem vi = null; ResultSet rs = null; PreparedStatement stmt = null;
 		String sql="{ call VentaItemGetOne(?) };";

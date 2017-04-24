@@ -7,44 +7,46 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>TiendaCD</title>
+	<title>Carrito de Compras</title>
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="bootstrap/css/dashboard.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<% Controlador ctrl = new Controlador(); %>
-<% Usuario user = (Usuario)request.getSession().getAttribute("userSession"); %>
-<% ArrayList<VentaItem> carrito = (ArrayList<VentaItem>) request.getSession().getAttribute("carrito");  %>
+<%
+	Controlador ctrl = new Controlador(); 
+	Usuario user = (Usuario)request.getSession().getAttribute("userSession"); 
+	ArrayList<VentaItem> carrito = (ArrayList<VentaItem>) request.getSession().getAttribute("carrito");
+	if(user.getTipoUsuario() == Usuario.TiposUsuario.Usuario){  
+%>
 <body>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<a class="navbar-brand">Luzbelito</a>
+			<ul class="nav navbar-nav">
+        	  	<li><a href="itemTop.jsp">Discos</a></li>
+          		<li><a href="listCompras.jsp">Compras</a></li> 
+        	</ul> 
 		</div>
-		<div>
-        	<ul class="nav navbar-nav">
-        		<li><a href="itemUser.jsp">Discos</a></li>
-        		<li><a href="compras.jsp">Compras</a></li>
-        	</ul>
-					
-			
+        <div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<% 	if(user != null){ 
-					int nro=0;
-					if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
-           				nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
-           			} else nro = 0; %>
-        		<li class="active"><a href="carrito.jsp">
+           	<% 	if(user != null){ int nro=0;
+			if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
+           		nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
+           	} else nro = 0; %>
+        	<li class="active"><a href="carrito.jsp">
         	<img alt="Brand" src="bootstrap/img/carrito25white.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> 
-
         	<% } %>
-
-				<form action="srvInicio" method="post" id="cerrar" name="cerrar">
-        			<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
-        		</form>
-        	</ul>
-		</div>
+        	<form action="srvInicio" method="post" id="cerrar" name="cerrar">        	
+        		<li><button class="btn btn-default navbar-btn" id="logout" name="logout">Cerrar Sesión</button></li>
+        	</form>
+          	</ul>
+          	<form action="srvItem" method="post" class="navbar-form navbar-right">
+            	<input type="text" class="form-control" id="buscar" name="buscar" placeholder="Que estás buscando?">
+          	</form>
+        </div>
 	</div>
 </nav>
   
@@ -67,14 +69,14 @@
        		if(carrito != null){
        			for(VentaItem vi : carrito){
        			Item item = ctrl.getOneItem(vi.getIdItem());
-       			monto = monto + item.getPrecio()*vi.getCantidad();
+       			monto = monto + item.GetPrecio().getValor()*vi.getCantidad();
        %>
          		<tr>
            			<td style="vertical-align:middle"><%=item.getTitulo()%></td>
            			<td style="vertical-align:middle"><%=item.GetArtista().getNombre() %></td> 
            			<td style="vertical-align:middle"><%=item.getAnioLanzamiento() %></td>
            			<td style="vertical-align:middle"><%=item.GetGenero().getDescripcion() %></td>
-           			<td style="vertical-align:middle">$<%=item.getPrecio() %></td>
+           			<td style="vertical-align:middle">$<%=item.GetPrecio().getValor() %></td>
            			<td style="vertical-align:middle"><%= vi.getCantidad() %></td>    
            			<td style="vertical-align:middle">
            				<form role="form" action="srvCompra" method="post" id="eliminar" name="eliminar">
@@ -94,14 +96,58 @@
    	<form role="form" action="srvCompra" method="post" id="confirmar" name="confirmar">
    		<table align="center" >
 			<tr>
-				<td><b>Número de Tarjeta</b></td>
+				<td><b>Provincia</b></td>
+				<td colspan=5>
+					<select class="form-control" id="cmbProvincia" name="cmbProvincia">
+  					<%
+          	 			for(Provincia provincia : ctrl.getAllProvincia()){
+           			%>
+ 			   			<option>
+ 			   				<%=provincia.getDescripcion()%>
+	 		   			</option>
+ 		   					<%} %>
+  					</select>
+				</td>
+			<td>
+			</tr>
+			<tr>			
+				<td><b>Localidad</b></td>
+				<td colspan=5> 
+					<input type="text" enabled="false" class="form-control" id="localidad" name="localidad" size="43">
+				</td>
+			</tr>
+			<tr>
+				<td><b>Calle</b></td>
+				<td colspan=5> 
+					<input type="text" enabled="false" class="form-control" id="calle" name="calle" size="43">
+				</td>
+			</tr>   		
+			<tr>
+				<td><b>Número</b></td>
 				<td> 
-					<input type="text" enabled="false" class="form-control" id="nroTarjeta" name="nroTarjeta" value="<%if(request.getAttribute("nroTarjeta")!=null){%><%=request.getAttribute("nroTarjeta") %><% }%>"  size="43">
+					<input type="text" enabled="false" class="form-control" id="nroCalle" name="nroCalle">
+				</td>
+				<td><b>Piso</b></td>
+				<td> 
+					<input type="text" enabled="false" class="form-control" id="piso" name="piso">
+				</td>
+				<td><b>Departamento</b></td>
+				<td> 
+					<input type="text" enabled="false" class="form-control" id="nroDpto" name="nroDpto">
+				</td>
+			</tr>
+			<tr style="height: 30px; "></tr>
+			<tr>
+				<td><b>Número de Tarjeta</b></td>
+				<td colspan=5> 
+					<input type="text" enabled="false" class="form-control" id="nroTarjeta" name="nroTarjeta" size="43">
 				</td>
 			</tr> 
 			<tr>
 				<td><b>Titular Tarjeta</b></td>
-				<td><input type="text" class="form-control" id="titTarjeta" name="titTarjeta" value="<%if(request.getAttribute("titTarjeta")!=null){%><%=request.getAttribute("titTarjeta") %><% }%>"></td>
+				<td colspan=5>
+					<input type="text" class="form-control" id="titTarjeta" name="titTarjeta">
+				</td>
 			</tr>
 			<tr></tr>
 		</table>
@@ -112,4 +158,8 @@
 <% } %>
 </div>
 </body>
+<%
+ 	} else if(user.getTipoUsuario() == null) response.sendRedirect("login.jsp");
+		else response.sendRedirect("userInicio.jsp");
+ %>
 </html>

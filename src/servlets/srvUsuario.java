@@ -70,7 +70,7 @@ public class srvUsuario extends HttpServlet {
 		
 			ctrl.save(usr);
 			request.getSession().setAttribute("FormSession", null);
-			request.getRequestDispatcher("usuario.jsp").forward(request, response);
+			request.getRequestDispatcher("adminUsuario.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("eventUpdate")!=null){
@@ -89,7 +89,7 @@ public class srvUsuario extends HttpServlet {
 			else request.setAttribute("habilitado", null);
 			
 			request.getSession().setAttribute("FormSession", "Modificacion");
-			request.getRequestDispatcher("usuario.jsp").forward(request, response);
+			request.getRequestDispatcher("adminUsuario.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("eventDelete")!=null){
@@ -99,7 +99,7 @@ public class srvUsuario extends HttpServlet {
 				ctrl.save(usr);
 			}
 			request.getSession().setAttribute("FormSession", null);
-			request.getRequestDispatcher("usuario.jsp").forward(request, response);
+			request.getRequestDispatcher("adminUsuario.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("clearForm")!=null){
@@ -114,7 +114,7 @@ public class srvUsuario extends HttpServlet {
 			request.setAttribute("tipo", null);
 			
 			request.getSession().setAttribute("FormSession", null);
-			request.getRequestDispatcher("usuario.jsp").forward(request, response);
+			request.getRequestDispatcher("adminUsuario.jsp").forward(request, response);
 		}
 	}
 

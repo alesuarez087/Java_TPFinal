@@ -62,7 +62,7 @@ public class srvGenero extends HttpServlet {
 				}
 			} else ctrl.save(genero);
 			
-			request.getRequestDispatcher("genero.jsp").forward(request, response);
+			request.getRequestDispatcher("adminGenero.jsp").forward(request, response);
 			
 				
 		}
@@ -89,7 +89,7 @@ public class srvGenero extends HttpServlet {
 			Genero gen = ctrl.getOneGenero(request.getParameter("descSelect"));
 			gen.setState(States.Baja);
 			ctrl.save(gen);
-			request.getRequestDispatcher("genero.jsp").forward(request, response);
+			request.getRequestDispatcher("adminGenero.jsp").forward(request, response);
 		}
 	}
 	

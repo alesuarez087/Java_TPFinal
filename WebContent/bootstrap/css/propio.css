@@ -11,7 +11,7 @@
 }
 
 #star label {
-  font-size: 20px;
+  font-size: 30px;
 }
 
 input[type="radio"] {
@@ -20,6 +20,7 @@ input[type="radio"] {
 
 label {
   color: grey;
+  font-size: 30px
 }
 
 .clasificacion {

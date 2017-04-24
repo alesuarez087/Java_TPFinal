@@ -28,7 +28,11 @@
 
 </head>
 
-<%Controlador ctrl = new Controlador(); %>
+<%
+	Controlador ctrl = new Controlador();
+	Usuario user = (Usuario)request.getSession().getAttribute("userSession");
+	if(user.getTipoUsuario() == Usuario.TiposUsuario.Administrador){ 
+%>
 
 <body>
 
@@ -39,8 +43,8 @@
       </div>
       <div>
         <ul class="nav navbar-nav">
-          <li><a href="itemUser.jsp">Discos</a></li> 
-          <li class="active"><a>Editar</a></li>
+          <li><a href="itemTop.jsp">Discos</a></li> 
+          <li class="active"><a href="adminInicio.jsp">Editar</a></li>
           </ul>
         <form action="srvUsuario" method="post" id="cerrar" name="cerrar">
         	<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
@@ -53,11 +57,13 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li><a href="artista.jsp">Artistas</a></li>
-            <li><a href="genero.jsp">Géneros</a></li>
-            <li><a href="item.jsp">Discos</a></li>
-            <li class="active"><a href="usuario.jsp">Usuarios<span class="sr-only">(current)</span></a></li>
-            </ul>
+          <% if(user.getTipoUsuario() == Usuario.TiposUsuario.Administrador){ %>
+            <li><a href="adminArtista.jsp">Artistas</a></li>
+            <li><a href="adminGenero.jsp">Géneros</a></li>
+            <li><a href="adminItem.jsp">Discos</a></li>
+            <li class="active"><a href="adminUsuario.jsp">Usuarios<span class="sr-only">(current)</span></a></li>
+            <% } %>
+			<li><a href="adminStockPrecio.jsp">Remarcar</a></li>
         </div>
 	</div>
 </div>
@@ -212,7 +218,8 @@
 
 
 </div>
-
-
 </body>
+<%
+	} else { response.sendRedirect("itemTop.jsp");}
+%>
 </html>

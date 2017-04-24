@@ -1,4 +1,3 @@
-<%@ page import="entidades.Item"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="controlador.Controlador" %>
 <%@ page import="entidades.*"%>
@@ -13,7 +12,11 @@
 	<link href="bootstrap/css/dashboard.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<%Controlador ctrl = new Controlador(); %>
+<%
+	Controlador ctrl = new Controlador();
+	Usuario user = (Usuario)request.getSession().getAttribute("userSession");
+	if(user.getTipoUsuario() == Usuario.TiposUsuario.Administrador){  
+%>
 <body>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -23,8 +26,8 @@
       </div>
       <div>
         <ul class="nav navbar-nav">
-          <li><a href="itemUser.jsp">Discos</a></li> 
-          <li class="active"><a>Editar</a></li>
+          <li><a href="itemTop.jsp">Discos</a></li> 
+          <li class="active"><a href="adminInicio">Editar</a></li>
           </ul>
         <form action="srvInicio" method="post" id="cerrar" name="cerrar">
         	<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
@@ -37,17 +40,19 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li><a href="artista.jsp">Artistas</a></li>
-            <li><a href="genero.jsp">Géneros</a></li>
-            <li class="active"><a>Discos<span class="sr-only">(current)</span></a></li>
-            <li><a href="usuario.jsp">Usuarios</a></li>
-            </ul>
+          <% if(user.getTipoUsuario() == Usuario.TiposUsuario.Administrador){ %>
+            <li><a href="adminArtista.jsp">Artistas</a></li>
+            <li><a href="adminGenero.jsp">Géneros</a></li>
+            <li class="active"><a href="adminItem.jsp">Discos<span class="sr-only">(current)</span></a></li>
+            <li><a href="adminUsuario.jsp">Usuarios</a></li>
+            <% } %>
+			<li><a href="adminStockPrecio.jsp">Remarcar</a></li>
         </div>
 	</div>
 </div>
 
 
-<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<div class="col-sm-9 col-sm-offset-3 col-md-12 col-md-offset-2 main">
 
 <h2 class="page-header">Discos</h2>
 
@@ -118,14 +123,16 @@
 			<td>
  				<select class="form-control" id="cmbTipoDisco" name="cmbTipoDisco">
  				<option>
- 				<%if(request.getAttribute("tipoDisco")!=null){%> 
+ 		   			<%if(request.getAttribute("tipoDisco")!=null){%> 
  		   			<%= request.getAttribute("tipoDisco") %> <%}%>
- 				</option>
- 				<option>BlueRay</option>
- 		   		<option>CD</option>
- 		   		<option>DVD</option>
- 		   		<option>Pasta</option>
- 		   		<option>Vinilo</option>
+ 		   		</option>
+  				<%
+          	 		for(TipoItem ti : ctrl.getAllTipoItemHab()){
+           		%>
+ 		   		<option>
+ 		   			<%=ti.getDescripcion()%>
+ 		   		</option>
+ 		   			<%} %>
   				</select>
 			</td>
 		</tr>
@@ -172,6 +179,7 @@
            	<th>Género</th>
            	<th>Precio</th>
            	<th>Stock</th>
+           	<th>Habilitado</th>
            	<th></th>
          </tr> 
        </thead>
@@ -185,8 +193,11 @@
            	<td><%= item.GetArtista().getNombre() %></td> 
            	<td><%= item.getAnioLanzamiento() %></td>
            	<td><%= item.GetGenero().getDescripcion() %></td>
-           	<td><%= item.getPrecio() %></td>
+           	<td><%= item.GetPrecio().getValor() %></td>
            	<td><%= item.getStock() %></td>
+           	<td style="vertical-olign:middle">
+           		<input type="checkbox" readonly disabled <%if(item.isHabilitado()){ %> checked <%} %>><td>
+           </td>
            	<form role="form" action="srvItem" method="post" id="botonera" name="botonera">
            		<td style="vertical-align:middle">
            			<input type="hidden" name="idSelect" id="idSelect" value="<%=item.getId()%>"/>
@@ -204,4 +215,7 @@
 
 
 </body>
+<%
+	} else { response.sendRedirect("itemTop.jsp");}
+%>
 </html>

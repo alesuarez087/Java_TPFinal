@@ -19,49 +19,54 @@
 </head>
 <body>
 
-	<% Controlador ctrl = new  Controlador(); %>
-	<% Usuario user = (Usuario)request.getSession().getAttribute("userSession"); %>
+<% 
+	Controlador ctrl = new  Controlador(); 
+	Usuario user = (Usuario)request.getSession().getAttribute("userSession");
+	if(user.getTipoUsuario() == Usuario.TiposUsuario.Usuario){ 
+%>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<a class="navbar-brand">Luzbelito</a>
+			<ul class="nav navbar-nav">
+        	  	<li><a href="itemTop.jsp">Discos</a></li>
+          		<li class="active"><a href="listCompras.jsp">Compras</a></li> 
+        	</ul> 
 		</div>
-		<div>
-        	<ul class="nav navbar-nav">
-        		<li><a href="itemUser.jsp">Discos</a></li>
-        		<li class="active"><a href="compras.jsp">Compras</a></li>
-        	</ul>
-					
-			
+        <div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<% 	if(user != null){ 
-					int nro=0;
-					if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
-           				nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
-           			} else nro = 0; %>
-        		<li><a>
-        			<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> <% } %> 
-				<form action="srvInicio" method="post" id="cerrar" name="cerrar">
-        			<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
-        		</form>
-        	</ul>
-		</div>
+           	<% 	if(user != null){ int nro=0;
+			if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
+           		nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
+           	} else nro = 0; %>
+        	<li><a href="carrito.jsp">
+        	<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> 
+
+        	<% } %>
+        	<form action="srvInicio" method="post" id="cerrar" name="cerrar">        	
+        		<li><button class="btn btn-default navbar-btn" id="logout" name="logout">Cerrar Sesión</button></li>
+        	</form>
+          	</ul>
+          	<form action="srvItem" method="post" class="navbar-form navbar-right">
+            	<input type="text" class="form-control" id="buscar" name="buscar" placeholder="Que estás buscando?">
+          	</form>
+        </div>
 	</div>
-</nav>
+</nav></nav>
 
 <div class="container-fluid">
       <div class="row">	
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li><a href="compras.jsp">Compras</a></li>
+            <li><a href="listCompras.jsp">Compras</a></li>
             <li class="active"><a href="itemsComprados.jsp">Clasficaciones<span class="sr-only">(current)</span></a></li>
             </ul>
         </div>
 	</div>
 </div>
 
-<div class="col-sm-4 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<div class="col-sm-6 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 	<h3 class="page-header">Clasificar</h3>
 	<table class="table table-hover">
 	<tr>
@@ -70,7 +75,7 @@
 		<th>Clasificacion</th>
 		<th></th>
 	</tr>
-	<% for(VentaItem vi : ctrl.getAllVentaItem(user.getId())){ %>
+	<% for(VentaItem vi : ctrl.getAllItemVentaItem(user.getId())){ %>
 	<tr>
 		<td>
 			<%=vi.GetItem().getTitulo() %>
@@ -95,4 +100,8 @@
 
 
 </body>
+<%
+	} else if (user == null) response.sendRedirect("login.jsp");
+		else response.sendRedirect("userInicio");
+%>
 </html>

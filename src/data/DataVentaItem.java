@@ -11,10 +11,10 @@ import utils.ApplicationException;
 
 public class DataVentaItem {
 
-	public static ArrayList<VentaItem> GetAll(int IdUsuario){
+	public static ArrayList<VentaItem> GetAllItem(int IdUsuario){
 		ArrayList<VentaItem> list = new ArrayList<VentaItem>();
 		VentaItem vi = null; ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentaItemGetAll(?) };";
+		String sql="{ call VentaItemGetAllForUser(?) };";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);
@@ -23,7 +23,7 @@ public class DataVentaItem {
 			while(rs.next() && rs!=null){
 				vi = new VentaItem();
 				vi.setCantidad(rs.getInt("cantidad"));
-				vi.setId(rs.getInt("id_usuario"));
+				vi.setId(rs.getInt("id_venta_item"));
 				vi.setIdItem(rs.getInt("id_item"));
 				vi.setIdVenta(rs.getInt("id_venta"));
 				
@@ -49,7 +49,7 @@ public class DataVentaItem {
 	public static ArrayList<VentaItem> GetAllVentas(int IdVenta){
 		ArrayList<VentaItem> list = new ArrayList<VentaItem>();
 		VentaItem vi = null; ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentaItemGetAll(?) };";
+		String sql="{ call VentaItemGetAllForVenta(?) };";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);
@@ -58,7 +58,7 @@ public class DataVentaItem {
 			while(rs.next() && rs!=null){
 				vi = new VentaItem();
 				vi.setCantidad(rs.getInt("cantidad"));
-				vi.setId(rs.getInt("id_usuario"));
+				vi.setId(rs.getInt("id_venta_item"));
 				vi.setIdItem(rs.getInt("id_item"));
 				vi.setIdVenta(rs.getInt("id_venta"));
 				

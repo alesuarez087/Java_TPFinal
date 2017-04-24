@@ -86,8 +86,8 @@ public class DataClasificacion {
 		return clas;
 	}
 	
-	public static int GetPromedio(int idItem){
-		int ret = 0;
+	public static double GetPromedio(int idItem){
+		double ret = 0;
 		ResultSet rs = null; PreparedStatement stmt = null;
 		String sql="{ call ClasificacionesPromedio(?) }";
 		try{
@@ -96,7 +96,7 @@ public class DataClasificacion {
 			stmt.setInt(1, idItem);
 			rs = stmt.executeQuery();
 			while(rs.next()){
-				ret =rs.getInt("id_clasificacion");
+				ret = rs.getFloat(1);
 			}
 			
 		} catch(SQLException e){

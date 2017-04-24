@@ -46,7 +46,7 @@ public class srvCompra extends HttpServlet {
 				Item item = ctrl.getOneItem(Integer.parseInt(request.getParameter("idSelect")));
 				request.getSession().setAttribute("item", item);
 				request.getRequestDispatcher("elegido.jsp").forward(request, response);
-			} else request.getRequestDispatcher("inicio.jsp").forward(request, response);
+			} else request.getRequestDispatcher("login.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("addCarrito")!=null){
@@ -58,7 +58,7 @@ public class srvCompra extends HttpServlet {
 			fila.setCantidad(Integer.parseInt(request.getParameter("cmbCantidad")));
 			carrito.add(fila);
 			request.getSession().setAttribute("carrito", carrito);
-			request.getRequestDispatcher("itemUser.jsp").forward(request, response);
+			request.getRequestDispatcher("itemTop.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("eventQuitarCarro")!=null){
@@ -77,16 +77,16 @@ public class srvCompra extends HttpServlet {
 			Venta venta = new Venta(); Item item;
 			Usuario user = (Usuario)request.getSession().getAttribute("userSession");
 			ArrayList<VentaItem> ventaItem = (ArrayList<VentaItem>)request.getSession().getAttribute("carrito");
-			double monto = 0;
-			
-			for(VentaItem vi : ventaItem){
-				monto = monto + vi.getCantidad()*ctrl.getOneItem(vi.getIdItem()).getPrecio();
-			}
 			
 			venta.setIdUsuario(user.getId());
-			venta.setMontoTotal(monto);
 			venta.setNroTarjeta(Integer.parseInt(request.getParameter("nroTarjeta")));
 			venta.setTitularTarjeta(request.getParameter("titTarjeta"));
+			venta.setIdProvincia(ctrl.getOneProvincia(request.getParameter("cmbProvincia").getId())); 
+			venta.setLocalidad(request.getParameter("localidad"));
+			venta.setCalle(request.getParameter("calle")); 
+			venta.setNroCalle(request.getParameter("nroCalle"));
+			venta.setPiso(request.getParameter("piso"));
+			venta.setNroDpto(request.getParameter("nroDpto"));
 			
 			ctrl.save(venta);
 			venta.setId(ctrl.ultimaVenta());

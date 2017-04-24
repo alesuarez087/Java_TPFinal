@@ -9,8 +9,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Compras</title>
-</head>
-<body>
 
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="bootstrap/css/dashboard.css" rel="stylesheet">
@@ -19,35 +17,41 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Compras</title>
 </head>
+<%
+	Controlador ctrl = new  Controlador();
+	Usuario user = (Usuario)request.getSession().getAttribute("userSession");
+	if(user.getTipoUsuario() == Usuario.TiposUsuario.Usuario){ 
+%>
 <body>
-<% Controlador ctrl = new  Controlador(); %>
-<% Usuario user = (Usuario)request.getSession().getAttribute("userSession"); %>
+
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<a class="navbar-brand">Luzbelito</a>
+			<ul class="nav navbar-nav">
+        	  	<li><a href="adminInicio.jsp">Discos</a></li>
+          		<li class="active"><a href="listCompras.jsp">Compras</a></li>  
+        	</ul> 
 		</div>
-		<div>
-        	<ul class="nav navbar-nav">
-        		<li><a href="itemUser.jsp">Discos</a></li>
-        		<li class="active"><a href="compras.jsp">Compras</a></li>
-        	</ul>
-					
-			
+        <div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<% 	if(user != null){ 
-					int nro=0;
-					if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
-           				nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
-           			} else nro = 0; %>
-        		<li><a>
-        			<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> <% } %> 
-				<form action="srvInicio" method="post" id="cerrar" name="cerrar">
-        			<li><button class="btn btn-default navbar-btn navbar-right" id="logout" name="logout">Cerrar Sesión</button></li> 
-        		</form>
-        	</ul>
-		</div>
+           	<% 	if(user != null){ int nro=0;
+			if((ArrayList<VentaItem>)request.getSession().getAttribute("carrito") != null){ 
+           		nro = ((ArrayList<VentaItem>)request.getSession().getAttribute("carrito")).size();
+           	} else nro = 0; %>
+        	<li><a href="carrito.jsp">
+        	<img alt="Brand" src="bootstrap/img/carrito25.png"> Carrito de compras <span clase="badge">(<%=nro %>)</a></li> 
+
+        	<% } %>
+        	<form action="srvInicio" method="post" id="cerrar" name="cerrar">        	
+        		<li><button class="btn btn-default navbar-btn" id="logout" name="logout">Cerrar Sesión</button></li>
+        	</form>
+          	</ul>
+          	<form action="srvItem" method="post" class="navbar-form navbar-right">
+            	<input type="text" class="form-control" id="buscar" name="buscar" placeholder="Que estás buscando?">
+          	</form>
+        </div>
 	</div>
 </nav>
 
@@ -55,7 +59,7 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="artista.jsp">Compras<span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="listCompras.jsp">Compras<span class="sr-only">(current)</span></a></li>
             <li><a href="itemsComprados.jsp">Clasficaciones</a></li>
             </ul>
         </div>
@@ -76,21 +80,22 @@
          	</tr> 
        		</thead>
        		<tbody>
-       		<% for(Venta venta : ctrl.getAllVentaForUser(user.getId())){  %>
+       		<% for(Venta venta : ctrl.getAllVentaForUser(user.getId())){ double monto = 0;  int i =0 ;%>
          	<tr>
            		<td style="vertical-align:middle">
            			<input type="hidden" name="nro" id="nro" value="<%=venta.getId()%>" /><%=venta.getId()%>
            		</td>
            		<td style="vertical-align:middle">
            			<% for(VentaItem ventaItem : ctrl.getAllVentaVentaItem(venta.getId())){ %>
-           				<input type="hidden" name="disco" id="disco" value="<%=ventaItem.GetItem().getTitulo()%>"/><%=ventaItem.GetItem().getTitulo() %> 
-					<% } %>
+           				<input type="hidden" name="disco" id="disco" value="<%=ventaItem.GetItem().getTitulo()%>,"/><%=ventaItem.GetItem().getTitulo()%> (x<%=ventaItem.getCantidad()%>)<%
+						i++; if(i<ctrl.getAllVentaVentaItem(venta.getId()).size()){           			
+           			%>,  <% } } %>
            		</td>
            		<td style="vertical-align:middle">
            			<input type="hidden" name="artista" id="artista" value="<%=venta.getFecha()%>"/><%=venta.getFecha()%>
            		</td>
            		<td style="vertical-align:middle">
-  					<input type="hidden" name="artista" id="artista" value="$ <%=venta.getMontoTotal()%>"/><%=venta.getMontoTotal()%>
+  					<input type="hidden" name="artista" id="artista" value="$ <%=Math.rint(venta.GetMonto())%>"/><%=Math.rint(venta.GetMonto())%>
            		</td>
 			</tr>
          	<% } %>
@@ -99,6 +104,9 @@
 		</div>
 	</div>
 </div>
-
 </body>
+<%
+	} else if(user.getTipoUsuario() == null) response.sendRedirect("login.jsp");
+		else response.sendRedirect("userInicio.jsp");
+ %>
 </html>

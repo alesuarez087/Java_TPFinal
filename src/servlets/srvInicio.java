@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controlador.ControladorInicio;
+import controlador.*;
 import entidades.Entidad.States;
 import entidades.Usuario;
 import entidades.Usuario.TiposUsuario;
@@ -44,26 +44,27 @@ public class srvInicio extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Usuario user = new Usuario();
-		ControladorInicio ctrl = new ControladorInicio();
+		Controlador ctrl = new Controlador();
 		if(request.getParameter("eventLogin")!=null){
-			user = ctrl.Login(request.getParameter("userLogin"), request.getParameter("passLogin"));
+			user = ctrl.login(request.getParameter("userLogin"), request.getParameter("passLogin"));
 			if(user!=null){
 				request.getSession().setAttribute("userSession", user);
 				
 				// TENER EN CUENTA COMO PROSEGUIR DEPENDIENDO DE QUE TIPO DE USAURIO SEA 
-				
-				request.getRequestDispatcher("itemUser.jsp").forward(request, response);
+				if(user.getTipoUsuario() != TiposUsuario.Usuario) request.getRequestDispatcher("adminInicio.jsp").forward(request, response);
+				else if(request.getSession().getAttribute("item")!=null) request.getRequestDispatcher("elegido.jsp").forward(request, response);
+				else request.getRequestDispatcher("itemTop.jsp").forward(request, response);
 				
 				
 				
 			} else{
 				request.setAttribute("messageError", "Usuario y/o Contraseña incorrecto");
-				request.getRequestDispatcher("inicio.jsp").forward(request, response);
+				request.getRequestDispatcher("login.jsp").forward(request, response);
 			}
 		}
 		
 		if(request.getParameter("eventRegisterUser")!=null){
-			user = ctrl.GetOne(request.getParameter("userCreate"));
+			user = ctrl.getOneUsuarioForName(request.getParameter("userCreate"));
 			if(user == null){
 				if(Validate.Email(request.getParameter("email"))){
 					user = new Usuario();
@@ -76,23 +77,23 @@ public class srvInicio extends HttpServlet {
 					user.setNombre(request.getParameter("nombre"));
 					user.setTipoUsuario(TiposUsuario.Usuario);
 					user.setState(States.Alta);
-					ctrl.Save(user);
+					ctrl.save(user);
 					request.setAttribute("messageError2", "Usuario Creado Correctamente");
-					request.getRequestDispatcher("inicio.jsp").forward(request, response);
+					request.getRequestDispatcher("login.jsp").forward(request, response);
 				}
 				else{
 					request.setAttribute("messageError2", "Email inválido");
-					request.getRequestDispatcher("inicio.jsp").forward(request, response);
+					request.getRequestDispatcher("login.jsp").forward(request, response);
 				} 
 			} else{
 				request.setAttribute("messageError2", "Ya existe un Usuario con ese nombre");
-				request.getRequestDispatcher("inicio.jsp").forward(request, response);
+				request.getRequestDispatcher("login.jsp").forward(request, response);
 			}
 		}
 		
 		if(request.getParameter("logout")!=null){
 			request.getSession().setAttribute("userSession", null);
-			request.getRequestDispatcher("itemUser.jsp").forward(request, response);;
+			request.getRequestDispatcher("itemTop.jsp").forward(request, response);;
 		}
 		
 	}

@@ -1,11 +1,15 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="entidades.Artista" %>
+<%@ page import="entidades.*" %>
 <%@ page import="controlador.*" %>
 <%@ page import="utils.*" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<%
+	Usuario user = (Usuario)request.getSession().getAttribute("userSession");
+	if(user.getTipoUsuario() == Usuario.TiposUsuario.Administrador){ 
+ %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Artistas</title>
@@ -33,8 +37,8 @@ function valida(){
       </div>
       <div>
         <ul class="nav navbar-nav">
-          <li><a href="itemUser.jsp">Discos</a></li> 
-          <li class="active"><a>Editar</a></li>
+          <li><a href="itemTop.jsp">Discos</a></li> 
+          <li class="active"><a href="adminInicio">Editar</a></li>
           </ul>
         <ul class="nav navbar-nav navbar-right">
         	<form action="srvInicio" method="post" id="cerrar" name="cerrar">
@@ -49,11 +53,13 @@ function valida(){
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a>Artistas <span class="sr-only">(current)</span></a></li>
-            <li><a href="genero.jsp">Géneros</a></li>
-            <li><a href="item.jsp">Discos</a></li>
-            <li><a href="usuario.jsp">Usuarios</a></li>
-            </ul>
+          <% if(user.getTipoUsuario() == Usuario.TiposUsuario.Administrador){ %>
+            <li class="active"><a href="adminArtista.jsp">Artistas<span class="sr-only">(current)</span></a></li>
+            <li><a href="adminGenero.jsp">Géneros</a></li>
+            <li><a href="adminItem.jsp">Discos</a></li>
+            <li><a href="adminUsuario.jsp">Usuarios</a></li>
+            <% } %>
+			<li><a href="adminStockPrecio.jsp">Remarcar</a></li>
         </div>
 	</div>
 </div>
@@ -139,4 +145,11 @@ function valida(){
      </table>
 
 </body>
+<%
+	} else { if(user.getTipoUsuario() == null) {
+				response.sendRedirect("login.jsp");
+			} else { response.sendRedirect("itemTop.jsp");
+				}
+	}
+%>
 </html>

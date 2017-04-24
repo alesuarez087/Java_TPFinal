@@ -24,7 +24,6 @@ public class DataVenta {
 				venta.setId(rs.getInt("id_venta"));
 				venta.setHabilitado(rs.getBoolean("habilitado"));
 				venta.setIdUsuario(rs.getInt("id_usuario"));
-				venta.setMontoTotal(rs.getDouble("monto"));
 				venta.setNroTarjeta(rs.getInt("nro_tarjeta"));
 				venta.setTitularTarjeta(rs.getString("titular_tarjeta"));
 				venta.setFecha(rs.getDate("fecha"));
@@ -62,7 +61,6 @@ public class DataVenta {
 				venta.setId(rs.getInt("id_venta"));
 				venta.setHabilitado(rs.getBoolean("habilitado"));
 				venta.setIdUsuario(rs.getInt("id_usuario"));
-				venta.setMontoTotal(rs.getDouble("monto"));
 				venta.setNroTarjeta(rs.getInt("nro_tarjeta"));
 				venta.setTitularTarjeta(rs.getString("titular_tarjeta"));
 				venta.setFecha(rs.getDate("fecha"));
@@ -99,7 +97,6 @@ public class DataVenta {
 				venta.setId(rs.getInt("id_venta"));
 				venta.setHabilitado(rs.getBoolean("habilitado"));
 				venta.setIdUsuario(rs.getInt("id_usuario"));
-				venta.setMontoTotal(rs.getDouble("monto"));
 				venta.setNroTarjeta(rs.getInt("nro_tarjeta"));
 				venta.setTitularTarjeta(rs.getString("titular_tarjeta"));
 				venta.setFecha(rs.getDate("fecha"));
@@ -123,16 +120,19 @@ public class DataVenta {
 	
 	public static void Insert(Venta venta){
 		ResultSet rs = null; PreparedStatement stmt = null;
-		String sql="{ call VentasInsert(?, ?, ?, ?) };";
+		String sql="{ call VentasInsert(?, ?, ?, ?, ?, ?, ?, ?, ?) };";
 		try{
 			Connection conn = FactoryConexion.getInstancia().getConn();
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, venta.getIdUsuario());
-			stmt.setDouble(2, venta.getMontoTotal());
-			stmt.setInt(3, venta.getNroTarjeta());
-			stmt.setString(4, venta.getTitularTarjeta());
-			
-//			venta.setFecha(rs.getDate("fecha"));
+			stmt.setInt(2, venta.getNroTarjeta());
+			stmt.setString(3, venta.getTitularTarjeta());
+			stmt.setInt(4, venta.getIdProvincia());
+			stmt.setString(5, venta.getLocalidad());
+			stmt.setString(6, venta.getCalle());
+			stmt.setString(7, venta.getNroCalle());
+			stmt.setString(8, venta.getPiso());
+			stmt.setString(9, venta.getNroDpto());
 			
 			rs = stmt.executeQuery();
 		} catch(SQLException e){

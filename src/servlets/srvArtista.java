@@ -64,7 +64,7 @@ public class srvArtista extends HttpServlet {
 				}
 			} else ctrl.save(artista);
 			
-			request.getRequestDispatcher("artista.jsp").forward(request, response);
+			request.getRequestDispatcher("adminArtista.jsp").forward(request, response);
 			
 				
 		}
@@ -78,7 +78,7 @@ public class srvArtista extends HttpServlet {
 			else request.setAttribute("habilitado", null);
 			
 			request.getSession().setAttribute("FormSession", "Modificacion");
-			request.getRequestDispatcher("artista.jsp").forward(request, response);
+			request.getRequestDispatcher("adminArtista.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("clearForm")!=null){
@@ -86,14 +86,14 @@ public class srvArtista extends HttpServlet {
 			request.setAttribute("descArtista", "");
 			request.setAttribute("habilitado", null);
 			request.getSession().setAttribute("FormSession", null);
-			request.getRequestDispatcher("artista.jsp").forward(request, response);
+			request.getRequestDispatcher("adminArtista.jsp").forward(request, response);
 		}
 		
 		if(request.getParameter("eventDelete")!=null){
 			artista = ctrl.getOneArtista(request.getParameter("nombreSelect"));
 			artista.setState(States.Baja);
 			ctrl.save(artista);
-			request.getRequestDispatcher("artista.jsp").forward(request, response);
+			request.getRequestDispatcher("adminArtista.jsp").forward(request, response);
 		}
 	}
 }

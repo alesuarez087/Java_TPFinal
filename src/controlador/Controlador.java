@@ -55,17 +55,54 @@ public class Controlador {
 	public ArrayList<Item> getAllItem(){
 		return DataItem.GetAll();
 	}
+	public ArrayList<Item> getAllItemHab(){
+		return DataItem.GetAllHabilitados();
+	}
 	public ArrayList<Item> getAllItemForArtista(String artista){
 		return DataItem.ItemsGetAllForArtista(artista);
 	}
 	public ArrayList<Item> getAllItemForGenero(String genero){
 		return DataItem.ItemsGetAllForGenero(genero);
 	}
+	public ArrayList<Item> getTop8(){
+		return DataItem.GetTop8();
+	}
+	public ArrayList<Item> getTopSemana(){
+		return DataItem.GetTopSemana();
+	}
+	public ArrayList<Item> getTopMes(){
+		return DataItem.GetTopMes();
+	}
+	public ArrayList<Item> getMejorPromedio(){
+		return DataItem.GetMejorPromedio();
+	}
+	public ArrayList<Item> getBusqueda(String search){
+		return DataItem.ItemsForSearch(search);
+	}
 	public Item getOneItem(int idItem){
 		return DataItem.GetOne(idItem);
 	}
 	public void save(Item item){
 		DataItem.Save(item);
+	}
+	
+	//PRECIO
+	public Precio getOnePrecioToday(int idItem){
+		return DataPrecio.GetPrecioToday(idItem);
+	}
+	public Precio getOnePrecioVenta(int idItem, int idVenta){
+		return DataPrecio.GetPrecioVenta(idItem, idVenta);
+	}
+	public void save(Precio precio){
+		DataPrecio.Save(precio);
+	}
+	
+	//PROVINCIA
+	public ArrayList<Provincia> getAllProvincia(){
+		return DataProvincia.ProvinciasGetAll();
+	}
+	public Provincia getOneProvincia(String nombreProvincia){
+		return DataProvincia.GetOne(nombreProvincia);
 	}
 
 	//VENTA
@@ -86,14 +123,14 @@ public class Controlador {
 	public void save(VentaItem ventaItem){
 		DataVentaItem.Insert(ventaItem);
 	}
-	public ArrayList<VentaItem> getAllVentaItem(int idUsuario){
-		return DataVentaItem.GetAll(idUsuario);
+	public ArrayList<VentaItem> getAllItemVentaItem(int idUsuario){
+		return DataVentaItem.GetAllItem(idUsuario);
 	}
 	public VentaItem getOneVentaItem(int idVentaItem){
 		return DataVentaItem.GetOne(idVentaItem);
 	}
 	public ArrayList<VentaItem> getAllVentaVentaItem(int idVenta){
-		return DataVentaItem.GetAll(idVenta);
+		return DataVentaItem.GetAllVentas(idVenta);
 	}
 	
 	//CLASIFICACION
@@ -106,9 +143,23 @@ public class Controlador {
 	public Clasificacion getOneClasificacion(int idItem, int idUsuario){
 		return DataClasificacion.GetOne(idItem, idUsuario);
 	}
-	public int getPromedio(int idItem){
+	public double getPromedio(int idItem){
 		return DataClasificacion.GetPromedio(idItem);
 	}
+	
+	//TIPOS DE ITEM
+	public ArrayList<TipoItem> getAllTipoItemHab(){
+		return DataTipoItem.GetAllHabilitados();
+	}
+	
+	public TipoItem getOneTipoItem(String desc){
+		return DataTipoItem.GetOne(desc);
+	}
+	
+	public TipoItem getOneTipoItem(int idTipoItem){
+		return DataTipoItem.GetOne(idTipoItem);
+	}
+	
 	//TIPOS DE USUARIO
 	public ArrayList<TipoUsuario> getAllTipoUsuario(){
 		return DataTipoUsuario.GetAll();
@@ -120,6 +171,12 @@ public class Controlador {
 	}
 	public Usuario getOneUsuario(int idUsuario){
 		return DataUsuario.GetOne(idUsuario);
+	}
+	public Usuario getOneUsuarioForName(String userName){
+		return DataUsuario.GetOne(userName);
+	}
+	public Usuario login(String user, String pass){
+		return DataUsuario.Login(user, pass);
 	}
 	public void save(Usuario user){
 		DataUsuario.Save(user);

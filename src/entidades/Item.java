@@ -2,11 +2,11 @@ package entidades;
 
 import data.DataArtista;
 import data.DataGenero;
+import data.DataPrecio;
 
 public class Item extends Entidad {
 	public static enum TiposDisco{ CD, DVD, Vinilo, Pasta, BlueRay}
 	
-	private double precio;
 	private int stock;
 	private String titulo;
 	private String anioLanzamiento;
@@ -20,12 +20,6 @@ public class Item extends Entidad {
 	}
 	public void setUrlPortada(String urlPortada) {
 		this.urlPortada = urlPortada;
-	}
-	public double getPrecio() {
-		return precio;
-	}
-	public void setPrecio(double precio) {
-		this.precio = precio;
 	}
 	public int getStock() {
 		return stock;
@@ -75,5 +69,11 @@ public class Item extends Entidad {
 	
 	public void quitoStock(int cant){
 		stock -= cant;
+	}
+	public void sumoStock(int cant){
+		stock += cant;
+	}
+	public Precio GetPrecio(){
+		return DataPrecio.GetPrecioToday(this.getId());
 	}
 }

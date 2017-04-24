@@ -10,21 +10,25 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-   <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand">Luzbelito</a>
-      </div>	
-      <div>
-        <ul class="nav navbar-nav">
-          <li><a href="itemUser.jsp">Discos</a></li>
-         </ul>
-         <ul class="nav navbar-nav navbar-right">
-          <li class="active"><a href="inicio.jsp">Iniciar Sesión</a></li> 
-        </ul>
-      </div>
-    </div>
-  </nav>
+   
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand">Luzbelito</a>
+			<ul class="nav navbar-nav">
+        	  	<li><a href="itemUser.jsp">Discos</a></li>
+        	</ul> 
+		</div>
+        <div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+        	<li class="active"><a href="inicio.jsp">Iniciar Sesión</a></li>
+          	</ul>
+          	<form action="srvItem" method="post" class="navbar-form navbar-right">
+            	<input type="text" class="form-control" id="buscar" name="buscar" placeholder="Que estás buscando?">
+          	</form>
+        </div>
+	</div>
+</nav>
 
   <!-- Acá termina la barra de navegación superior. -->
   

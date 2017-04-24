@@ -2,18 +2,56 @@ package entidades;
 
 import java.util.Date;
 
+import data.DataPrecio;
+import data.DataVentaItem;
+
 public class Venta extends Entidad {
-	private double montoTotal;
 	private String titularTarjeta;
 	private int nroTarjeta;
 	private int idUsuario;
 	private Date fecha;
+	private int idProvincia;
+	private String localidad;
+	private String calle;
+	private String nroCalle;
+	private String piso;
+	private String nroDpto;
 	
-	public double getMontoTotal() {
-		return montoTotal;
+	public int getIdProvincia() {
+		return idProvincia;
 	}
-	public void setMontoTotal(double montoTotal) {
-		this.montoTotal = montoTotal;
+	public void setIdProvincia(int idProvincia) {
+		this.idProvincia = idProvincia;
+	}
+	public String getLocalidad() {
+		return localidad;
+	}
+	public void setLocalidad(String localidad) {
+		this.localidad = localidad;
+	}
+	public String getCalle() {
+		return calle;
+	}
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
+	public String getNroCalle() {
+		return nroCalle;
+	}
+	public void setNroCalle(String nroCalle) {
+		this.nroCalle = nroCalle;
+	}
+	public String getPiso() {
+		return piso;
+	}
+	public void setPiso(String piso) {
+		this.piso = piso;
+	}
+	public String getNroDpto() {
+		return nroDpto;
+	}
+	public void setNroDpto(String nroDpto) {
+		this.nroDpto = nroDpto;
 	}
 	public String getTitularTarjeta() {
 		return titularTarjeta;
@@ -38,5 +76,14 @@ public class Venta extends Entidad {
 	}
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+	
+	public double GetMonto(){
+		double monto = 0;
+		for(VentaItem vi : DataVentaItem.GetAllVentas(this.getId())){
+			Precio precio = DataPrecio.GetPrecioVenta(vi.getIdItem(), this.getId());
+			monto = monto + precio.getValor() * vi.getCantidad();
+		}
+		return monto;
 	}
 }
